@@ -20,13 +20,21 @@ public class Eater {
 
     public boolean toggle() {
         if (isEating) {
-            isEating = false;
-            eaterMotor.setPower(0);
+            off();
         } else {
-            isEating = true;
-            eaterMotor.setPower(1);
+            on();
         }
 
         return isEating;
+    }
+
+    public void on() {
+        isEating = true;
+        eaterMotor.setPower(1);
+    }
+
+    public void off() {
+        isEating = false;
+        eaterMotor.setPower(0);
     }
 }
