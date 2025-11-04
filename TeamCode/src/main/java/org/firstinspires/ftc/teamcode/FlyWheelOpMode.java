@@ -30,7 +30,7 @@ public class FlyWheelOpMode extends OpMode {
         intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        flywheel2.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel1.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override

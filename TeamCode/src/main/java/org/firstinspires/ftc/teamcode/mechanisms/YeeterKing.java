@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
@@ -41,13 +42,13 @@ public class YeeterKing {
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
         yeetWheelLeft = hardwareMap.get(DcMotorEx.class, "flywheel_left");
 
-        yeetWheelLeft.setDirection(DcMotor.Direction.FORWARD);
+        yeetWheelLeft.setDirection(DcMotor.Direction.REVERSE);
 
         yeetWheelLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         yeetWheelNotLeft = hardwareMap.get(DcMotorEx.class, "flywheel_right");
 
-        yeetWheelNotLeft.setDirection(DcMotor.Direction.REVERSE);
+        yeetWheelNotLeft.setDirection(DcMotor.Direction.FORWARD);
 
         yeetWheelNotLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -66,16 +67,20 @@ public class YeeterKing {
     }
 
     public void launch(boolean shotRequested, double shootVelocity) {
-        telemetry.addData("LaunchState", launchState);
-        telemetry.addData("LaunchVelocity",shootVelocity);
+
         switch (launchState) {
             case IDLE:
+               // telemetry.addData("LaunchState", launchState);
+               // telemetry.addData("LaunchVelocity",shootVelocity);
                 if (shotRequested) {
                     launchState = LaunchState.SPIN_UP;
+
                 }
 
                 break;
             case SPIN_UP:
+               // telemetry.addData("LaunchState", launchState);
+                //telemetry.addData("LaunchVelocity",shootVelocity);
                 yeetWheelLeft.setVelocity(shootVelocity);
                 yeetWheelNotLeft.setVelocity(shootVelocity);
 
@@ -86,6 +91,8 @@ public class YeeterKing {
                 }
                 break;
             case LAUNCH:
+               // telemetry.addData("LaunchState", launchState);
+               // telemetry.addData("LaunchVelocity",shootVelocity);
                 yeetWheelLeft.setVelocity(shootVelocity);
                 yeetWheelNotLeft.setVelocity(shootVelocity);
                 // For now, if velocity drops on either flyWheel, we probably fired...

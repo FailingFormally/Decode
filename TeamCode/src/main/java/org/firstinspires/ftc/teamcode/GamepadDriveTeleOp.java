@@ -51,7 +51,7 @@ public class GamepadDriveTeleOp extends OpMode {
             yeeter.launch(gamepad2.yWasPressed(), 1100);
             yeeter.launch(gamepad2.bWasPressed(), 1500);
 
-            if(gamepad1.backWasPressed()){
+            if(gamepad2.backWasPressed()){
                 yeeter.stop();
             }
 
