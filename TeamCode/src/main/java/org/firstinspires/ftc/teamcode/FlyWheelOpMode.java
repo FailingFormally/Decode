@@ -22,7 +22,7 @@ public class FlyWheelOpMode extends OpMode {
     public void init() {
         flywheel1 = hardwareMap.get(DcMotor.class, "flywheel1");
         flywheel2 = hardwareMap.get(DcMotor.class, "flywheel2");
-        intake = hardwareMap.get(DcMotor.class, "intake");
+       // intake = hardwareMap.get(DcMotor.class, "intake");
         motor = hardwareMap.get(DcMotor.class, "motor");
 
         flywheel1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

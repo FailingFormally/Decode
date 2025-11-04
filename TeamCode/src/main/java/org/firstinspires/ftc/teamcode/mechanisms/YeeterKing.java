@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.FlyWheelTesterOpMode;
 
 public class YeeterKing {
@@ -14,6 +15,9 @@ public class YeeterKing {
     private DcMotorEx yeetWheelNotLeft;
 
     final double tolerance = 0.1;
+
+    private Telemetry telemetry;
+
 
     private enum LaunchState {
         /**
@@ -34,7 +38,7 @@ public class YeeterKing {
 
     private LaunchState launchState = LaunchState.IDLE;
 
-    public void init(HardwareMap hardwareMap) {
+    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
         yeetWheelLeft = hardwareMap.get(DcMotorEx.class, "flywheel_left");
 
         yeetWheelLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -47,13 +51,23 @@ public class YeeterKing {
 
         yeetWheelNotLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        this.telemetry = telemetry;
+
         PIDFCoefficients coefficients = new PIDFCoefficients(300, 0, 0, 10);
         yeetWheelLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, coefficients);
         yeetWheelNotLeft.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, coefficients);
 
     }
 
+    public void stop(){
+        yeetWheelLeft.setPower(0);
+        yeetWheelNotLeft.setPower(0);
+        launchState=LaunchState.IDLE;
+    }
+
     public void launch(boolean shotRequested, double shootVelocity) {
+        telemetry.addData("LaunchState", launchState);
+        telemetry.addData("LaunchVelocity",shootVelocity);
         switch (launchState) {
             case IDLE:
                 if (shotRequested) {

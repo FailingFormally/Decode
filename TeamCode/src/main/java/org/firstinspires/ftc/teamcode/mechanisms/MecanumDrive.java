@@ -95,6 +95,7 @@ public class MecanumDrive {
         telemetry.addData("Back Left Motor Power", backLeftPower);
         telemetry.addData("Front Right Motor Power", frontRightPower);
         telemetry.addData("Back Right Motor Power", backRightPower);
+        telemetry.addData("speed",speedMultiplier);
     }
 
     /**
