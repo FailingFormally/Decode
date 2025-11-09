@@ -12,6 +12,8 @@ public class Eater {
 
     private DcMotor eaterMotor;
 
+    public boolean status() { return isEating; }
+
     public void init(HardwareMap hardwareMap) {
         eaterMotor = hardwareMap.dcMotor.get("intake");
         eaterMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -36,5 +38,10 @@ public class Eater {
     public void off() {
         isEating = false;
         eaterMotor.setPower(0);
+    }
+
+    public  void setPower(double power) {
+        isEating = true;
+        eaterMotor. setPower(power);
     }
 }

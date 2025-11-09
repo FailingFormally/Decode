@@ -15,6 +15,8 @@ public class YeeterKing {
     private DcMotorEx yeetWheelLeft;
     private DcMotorEx yeetWheelNotLeft;
 
+    private double velocity = 0;
+
     final double tolerance = 0.1;
 
     private Telemetry telemetry;
@@ -38,6 +40,17 @@ public class YeeterKing {
     }
 
     private LaunchState launchState = LaunchState.IDLE;
+
+    public void setDirection(DcMotor.Direction direction) {
+        if (direction == DcMotor.Direction.FORWARD) {
+            yeetWheelLeft.setDirection(DcMotor.Direction.REVERSE);
+            yeetWheelNotLeft.setDirection(DcMotor.Direction.FORWARD);
+        } else {
+            yeetWheelLeft.setDirection(DcMotor.Direction.FORWARD);
+            yeetWheelNotLeft.setDirection(DcMotor.Direction.REVERSE);
+        }
+    }
+
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
         yeetWheelLeft = hardwareMap.get(DcMotorEx.class, "flywheel_left");
@@ -66,7 +79,11 @@ public class YeeterKing {
         launchState=LaunchState.IDLE;
     }
 
-    public void launch(boolean shotRequested, double shootVelocity) {
+    public void setVelocity(double velocity) {
+        this.velocity = velocity;
+    }
+
+    public void launch(boolean shotRequested) {
 
         switch (launchState) {
             case IDLE:
@@ -74,31 +91,30 @@ public class YeeterKing {
                // telemetry.addData("LaunchVelocity",shootVelocity);
                 if (shotRequested) {
                     launchState = LaunchState.SPIN_UP;
-
                 }
 
                 break;
             case SPIN_UP:
                // telemetry.addData("LaunchState", launchState);
                 //telemetry.addData("LaunchVelocity",shootVelocity);
-                yeetWheelLeft.setVelocity(shootVelocity);
-                yeetWheelNotLeft.setVelocity(shootVelocity);
+                yeetWheelLeft.setVelocity(velocity);
+                yeetWheelNotLeft.setVelocity(velocity);
 
                 // Advance to LAUNCH when both motors are up to speed
-                if (yeetWheelLeft.getVelocity() >= (shootVelocity - tolerance) &&
-                        yeetWheelNotLeft.getVelocity() >= (shootVelocity - tolerance)) {
+                if (yeetWheelLeft.getVelocity() >= (velocity - tolerance) &&
+                        yeetWheelNotLeft.getVelocity() >= (velocity - tolerance)) {
                     launchState = LaunchState.LAUNCH;
                 }
                 break;
             case LAUNCH:
                // telemetry.addData("LaunchState", launchState);
                // telemetry.addData("LaunchVelocity",shootVelocity);
-                yeetWheelLeft.setVelocity(shootVelocity);
-                yeetWheelNotLeft.setVelocity(shootVelocity);
+                yeetWheelLeft.setVelocity(velocity);
+                yeetWheelNotLeft.setVelocity(velocity);
                 // For now, if velocity drops on either flyWheel, we probably fired...
                 // go back to SPIN_UP
-                if (yeetWheelLeft.getVelocity() < (shootVelocity + tolerance) ||
-                        yeetWheelNotLeft.getVelocity() < (shootVelocity + tolerance)) {
+                if (yeetWheelLeft.getVelocity() < (velocity + tolerance) ||
+                        yeetWheelNotLeft.getVelocity() < (velocity + tolerance)) {
                     launchState = LaunchState.SPIN_UP;
                 }
                 break;
