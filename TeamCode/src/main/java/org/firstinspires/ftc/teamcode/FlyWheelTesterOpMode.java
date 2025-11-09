@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -23,6 +24,8 @@ public class FlyWheelTesterOpMode extends OpMode {
 
     private DcMotorEx flyWheelLeft;
     private DcMotorEx flyWheelRight;
+
+    private DcMotorEx intake;
 
     /**
      * Tracking the state of DPAD UP and DOWN
@@ -79,6 +82,7 @@ public class FlyWheelTesterOpMode extends OpMode {
     public void init() {
         flyWheelLeft = hardwareMap.get(DcMotorEx.class, "flywheel_left");
         flyWheelRight = hardwareMap.get(DcMotorEx.class, "flywheel_right");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
         /*
          * Here we set our launcher to the RUN_USING_ENCODER runmode.
          * If you notice that you have no control over the velocity of the motor, it just jumps
@@ -88,6 +92,7 @@ public class FlyWheelTesterOpMode extends OpMode {
          */
         flyWheelLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         flyWheelRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         flyWheelRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -120,6 +125,18 @@ public class FlyWheelTesterOpMode extends OpMode {
             targetVelocity -= 100;
         }
         wasDown = gamepad1.dpad_down;
+
+        if (gamepad1.left_bumper) {
+            intake.setPower(1.0);
+        }
+
+        if (gamepad1.x) {
+            intake.setPower(0);
+        }
+
+        if (gamepad1.right_bumper) {
+            intake.setPower(-1);
+        }
 
         telemetry.addData("Target Velocity", targetVelocity);
         telemetry.addData("Left Velocity", flyWheelLeft.getVelocity());
