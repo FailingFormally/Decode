@@ -137,7 +137,7 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        yeeter.launch(true,800);
+//        yeeter.launch(true,800);
         sleep(1000);  // pause to display final telemetry message.
     }
 
