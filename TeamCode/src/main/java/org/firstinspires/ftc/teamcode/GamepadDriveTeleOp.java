@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 //import org.firstinspires.ftc.teamcode.mechanisms.Eater;
 import org.firstinspires.ftc.teamcode.mechanisms.Eater;
@@ -13,6 +14,9 @@ import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
 @TeleOp(name="Gamepad Driving")
 public class GamepadDriveTeleOp extends OpMode {
     MecanumDrive drive = new MecanumDrive(telemetry);
+
+    Servo servoLeft;
+    Servo servoRight;
     Eater eater = new Eater();
 
     YeeterKing yeeter = new YeeterKing();
@@ -21,6 +25,10 @@ public class GamepadDriveTeleOp extends OpMode {
     final double NORMAL_SPEED = 0.3;
 
     boolean turboEnabled = false;
+
+
+
+
 
 
     double getSpeed() {
@@ -39,6 +47,13 @@ public class GamepadDriveTeleOp extends OpMode {
         drive.init(hardwareMap);
         eater.init(hardwareMap);
         yeeter.init(hardwareMap, telemetry);
+        yeeter.close();
+
+        servoRight = hardwareMap.get(Servo.class, "servo2");
+        servoLeft = hardwareMap.get(Servo.class, "servo1");
+
+        servoLeft.setDirection(Servo.Direction.REVERSE);
+
     }
 
     @Override
@@ -56,7 +71,7 @@ public class GamepadDriveTeleOp extends OpMode {
             yeeter.setVelocity(800);
             yeeter.launch(true);
         }
-        if (gamepad2.yWasPressed()){
+        if (gamepad2.yWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
             yeeter.setVelocity(1100);
             yeeter.launch(true);
@@ -73,7 +88,7 @@ public class GamepadDriveTeleOp extends OpMode {
         }
 
 
-        if(gamepad2.backWasPressed()){
+        if (gamepad2.backWasPressed()) {
             yeeter.stop();
         }
 
@@ -84,6 +99,18 @@ public class GamepadDriveTeleOp extends OpMode {
         if (gamepad1.right_bumper) {
             turboEnabled = false;
         }
+
+        if (gamepad2.left_bumper){
+            servoRight.setPosition(0);
+            servoLeft.setPosition(0);
+        }
+
+        if (gamepad2.right_bumper){
+            servoRight.setPosition(.14);
+            servoLeft.setPosition(.14);
+        }
+
+
 
 
 

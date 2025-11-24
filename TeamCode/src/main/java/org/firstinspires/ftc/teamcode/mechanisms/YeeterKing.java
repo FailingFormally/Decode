@@ -36,6 +36,8 @@ public class YeeterKing {
 
         SPIN_UP,
 
+        READY,
+
         LAUNCH,
         /**
          * In this state, we are actively waiting for the launch to occur.
@@ -44,6 +46,8 @@ public class YeeterKing {
          */
         LAUNCHING
     }
+
+    private boolean hasLaunched = false;
 
     private LaunchState launchState = LaunchState.IDLE;
 
@@ -105,6 +109,12 @@ public class YeeterKing {
 
     public void launch(boolean shotRequested) {
 
+        // If we have already launched, and a new shot is requested,
+        // reset hasLaunched to track the next shot
+        if (hasLaunched == true && shotRequested == true) {
+            hasLaunched = false;
+        }
+
         switch (launchState) {
             case IDLE:
                 // telemetry.addData("LaunchState", launchState);
@@ -113,7 +123,8 @@ public class YeeterKing {
                     launchState = LaunchState.SPIN_UP;
                 }
 
-                break;
+
+                    break;
             case SPIN_UP:
                 // telemetry.addData("LaunchState", launchState);
                 //telemetry.addData("LaunchVelocity",shootVelocity);
@@ -123,9 +134,17 @@ public class YeeterKing {
                 // Advance to LAUNCH when both motors are up to speed
                 if (yeetWheelLeft.getVelocity() >= (velocity - tolerance) &&
                         yeetWheelNotLeft.getVelocity() >= (velocity - tolerance)) {
-                    launchState = LaunchState.LAUNCH;
+                    launchState = LaunchState.READY;
                 }
                 break;
+
+            case READY:
+                if(hasLaunched == false){
+                    launchState= launchState.LAUNCH;
+
+                }
+                break;
+
             case LAUNCH:
                 open();
                 timer.reset();
@@ -133,6 +152,7 @@ public class YeeterKing {
                 break;
 
             case LAUNCHING:
+                hasLaunched = true;
                 if (timer.seconds() > .8) {
                     close();
                     launchState = LaunchState.SPIN_UP;
