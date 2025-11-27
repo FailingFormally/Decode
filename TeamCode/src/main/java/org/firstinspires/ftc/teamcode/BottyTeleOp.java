@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.mechanisms.AprilTagWebcam;
 import org.firstinspires.ftc.teamcode.mechanisms.BottyClaw;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 
@@ -10,11 +11,13 @@ import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 public class BottyTeleOp extends OpMode {
     MecanumDrive drive = new MecanumDrive(telemetry);
 
+    AprilTagWebcam webcam = new AprilTagWebcam();
     BottyClaw claw = new BottyClaw();
     final double FULL_SPEED = 0.5;
     final double NORMAL_SPEED = 0.3;
 
     boolean turboEnabled = false;
+
 
     double getSpeed() {
         if (turboEnabled)
@@ -31,10 +34,14 @@ public class BottyTeleOp extends OpMode {
     public void init() {
         drive.init(hardwareMap);
         claw.init(hardwareMap);
+        webcam.init(hardwareMap, telemetry);
+
     }
 
     @Override
     public void loop() {
+
+        webcam.update();
 
         if (!gamepad1.dpad_up && !gamepad1.dpad_down) { claw.stop(); }
 
@@ -69,6 +76,10 @@ public class BottyTeleOp extends OpMode {
 
         drive.drive(forward, right, rotate, getSpeed());
 
+        if (gamepad1.xWasPressed()) {
+            webcam.printAllDetections();
+        }
+
         telemetry.update();
 
     }
@@ -76,5 +87,6 @@ public class BottyTeleOp extends OpMode {
     @Override
     public void stop() {
         claw.closeClaw(); // Make sure the claw is in the closed position
+        webcam.stop();
     }
 }
