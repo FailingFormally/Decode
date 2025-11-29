@@ -224,7 +224,7 @@ public class AprilTagWebcam {
      * Call in the OpMode loop to detect AprilTags
      */
     public void update() {
-        currentDetections = aprilTag.getDetections();
+        currentDetections   = aprilTag.getDetections();
     }
 
     /**

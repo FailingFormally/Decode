@@ -76,9 +76,7 @@ public class BottyTeleOp extends OpMode {
 
         drive.drive(forward, right, rotate, getSpeed());
 
-        if (gamepad1.xWasPressed()) {
-            webcam.printAllDetections();
-        }
+        webcam.printAllDetections();
 
         telemetry.update();
 
