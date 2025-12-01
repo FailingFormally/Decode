@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 //import org.firstinspires.ftc.teamcode.mechanisms.Eater;
@@ -48,16 +47,12 @@ public class GamepadDriveTeleOp extends OpMode {
         eater.init(hardwareMap);
         yeeter.init(hardwareMap, telemetry);
         yeeter.close();
-
-        servoRight = hardwareMap.get(Servo.class, "servo2");
-        servoLeft = hardwareMap.get(Servo.class, "servo1");
-
-        servoLeft.setDirection(Servo.Direction.REVERSE);
-
     }
 
     @Override
     public void loop() {
+        telemetry.addData("LaunchSate",yeeter.getLaunchState());
+
         if (gamepad2.rightBumperWasPressed()) {
             eater.toggle();
         }
@@ -65,26 +60,26 @@ public class GamepadDriveTeleOp extends OpMode {
         eater.setPower(gamepad2.right_trigger);
 
         telemetry.addData("Eater (Intake) Status", eater.status());
+        yeeter.update();
 
         if (gamepad2.xWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
             yeeter.setVelocity(800);
-            yeeter.launch(true);
+            yeeter.launch();
         }
         if (gamepad2.yWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
             yeeter.setVelocity(1100);
-            yeeter.launch(true);
+            yeeter.launch();
         }
         if (gamepad2.bWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
             yeeter.setVelocity(1500);
-            yeeter.launch(true);
+            yeeter.launch();
         }
         if (gamepad2.aWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.REVERSE);
             yeeter.setVelocity(200);
-            yeeter.launch(true);
         }
 
 
@@ -100,19 +95,9 @@ public class GamepadDriveTeleOp extends OpMode {
             turboEnabled = false;
         }
 
-        if (gamepad2.left_bumper){
-            servoRight.setPosition(0);
-            servoLeft.setPosition(0);
+        if(gamepad1.left_trigger >0){
+            yeeter.open();
         }
-
-        if (gamepad2.right_bumper){
-            servoRight.setPosition(.14);
-            servoLeft.setPosition(.14);
-        }
-
-
-
-
 
         double forward = -gamepad1.left_stick_y;
         double right = -gamepad1.left_stick_x;

@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.FlyWheelTesterOpMode;
 
 public class YeeterKing {
 
@@ -48,6 +46,14 @@ public class YeeterKing {
     }
 
     private boolean hasLaunched = false;
+    private boolean shotRequested = false;
+    public void launch(){
+        shotRequested = true;
+    }
+
+    public LaunchState getLaunchState() {
+        return launchState;
+    }
 
     private LaunchState launchState = LaunchState.IDLE;
 
@@ -60,17 +66,25 @@ public class YeeterKing {
             yeetWheelNotLeft.setDirection(DcMotor.Direction.REVERSE);
         }
     }
+
     public void open()
     {
-        servo1.setPosition(0.6694);
-        servo2.setPosition(0.2994);
+        servo1.setPosition(.15);
+        servo2.setPosition(.15);
+    }
+
+    public void push()
+    {
+        servo1.setPosition(.35);
+        servo2.setPosition(.35);
     }
     public void close()
     {
-        servo1.setPosition(0.8794);
-        servo2.setPosition(0.2694);
+        servo1.setPosition(0);
+        servo2.setPosition(0);
     }
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+        timer = new ElapsedTime();
         yeetWheelLeft = hardwareMap.get(DcMotorEx.class, "flywheel_left");
 
         yeetWheelLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -93,8 +107,9 @@ public class YeeterKing {
         servo1.setDirection(Servo.Direction.REVERSE);
 
         servo2 = hardwareMap.get(Servo.class, "servo2");
+        //servo2.setDirection(Servo.Direction.FORWARD);
 
-        close();
+
     }
 
     public void stop(){
@@ -103,11 +118,20 @@ public class YeeterKing {
         launchState=LaunchState.IDLE;
     }
 
+    public void printTelemetry(){
+        telemetry.addData("LaunchSate",getLaunchState());
+        telemetry.addData("leftWheel",yeetWheelLeft.getVelocity());
+        telemetry.addData("notLeftWheel",yeetWheelNotLeft.getVelocity());
+        telemetry.addData("shotRequested", shotRequested);
+        telemetry.addData("hadLaunched",hasLaunched);
+
+    }
+
     public void setVelocity(double velocity) {
         this.velocity = velocity;
     }
 
-    public void launch(boolean shotRequested) {
+    public void update() {
 
         // If we have already launched, and a new shot is requested,
         // reset hasLaunched to track the next shot
@@ -126,6 +150,7 @@ public class YeeterKing {
 
                     break;
             case SPIN_UP:
+                close();
                 // telemetry.addData("LaunchState", launchState);
                 //telemetry.addData("LaunchVelocity",shootVelocity);
                 yeetWheelLeft.setVelocity(velocity);
@@ -146,13 +171,14 @@ public class YeeterKing {
                 break;
 
             case LAUNCH:
-                open();
+                push();
                 timer.reset();
                 launchState = LaunchState.LAUNCHING;
                 break;
 
             case LAUNCHING:
                 hasLaunched = true;
+                shotRequested = false;
                 if (timer.seconds() > .8) {
                     close();
                     launchState = LaunchState.SPIN_UP;

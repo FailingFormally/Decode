@@ -23,7 +23,7 @@ public class Servo1TestOpMode extends OpMode {
     @Override
     public void init() {
         servo = hardwareMap.get(Servo.class, "servo1");
-        targetPostion = servo.getPosition();
+        servo.setPosition(0);
     }
 
     /**
@@ -35,12 +35,12 @@ public class Servo1TestOpMode extends OpMode {
     public void loop() {
 
         if (gamepad1.dpad_up && !wasUp && targetPostion < 1) {
-            targetPostion += 0.01;
+            targetPostion += 0.1;
         }
         wasUp = gamepad1.dpad_up;
 
         if (gamepad1.dpad_down && !wasDown && targetPostion > 0) {
-            targetPostion -= 0.01;
+            targetPostion -= 0.1;
         }
         wasDown = gamepad1.dpad_down;
 
