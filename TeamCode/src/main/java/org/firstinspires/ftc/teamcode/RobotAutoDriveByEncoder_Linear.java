@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
+//import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
 
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
@@ -63,7 +63,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Robot: Auto Drive By Encoder", group="Robot")
+@Autonomous(name="Auto Select", group="Auto")
 public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -73,6 +73,8 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
     private DcMotor back_right_Motor   = null;
 
     private ElapsedTime     runtime = new ElapsedTime();
+
+    private String autoSelected = "RedLong"; // Default autonomous mode
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -85,28 +87,28 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
     static final double     WHEEL_DIAMETER_INCHES   = 4.09449 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                                                      (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.3;
-    static final double     TURN_SPEED              = 0.2;
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     DRIVE_SPEED             = 0.6;
+    static final double     TURN_SPEED              = 0.5;
 
-    private YeeterKing yeeter = new YeeterKing();
+//    private YeeterKing yeeter = new YeeterKing();
 
     @Override
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        front_left_Motor = hardwareMap.dcMotor.get("FrontLeft1");
-        front_right_Motor = hardwareMap.dcMotor.get("FrontRight0");
-        back_left_Motor = hardwareMap.dcMotor.get("RearLeft3");
-        back_right_Motor = hardwareMap.dcMotor.get("RearRight2");
+        front_left_Motor  = hardwareMap.get(DcMotor.class, "FrontLeft1");
+        front_right_Motor = hardwareMap.get(DcMotor.class, "FrontRight0");
+        back_left_Motor   = hardwareMap.get(DcMotor.class, "RearLeft3");
+        back_right_Motor  = hardwareMap.get(DcMotor.class, "RearRight2");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        front_left_Motor.setDirection(DcMotor.Direction.REVERSE);
-        front_right_Motor.setDirection(DcMotor.Direction.FORWARD);
-        back_left_Motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        back_right_Motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        front_left_Motor.setDirection(DcMotor.Direction.FORWARD);
+        front_right_Motor.setDirection(DcMotor.Direction.REVERSE);
+        back_left_Motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        back_right_Motor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         front_left_Motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         front_right_Motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -120,27 +122,89 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d :%7d",
-                          front_left_Motor.getCurrentPosition(),
-                          front_right_Motor.getCurrentPosition(),
-                          back_left_Motor.getCurrentPosition(),
-                          back_right_Motor.getCurrentPosition());
+                front_left_Motor.getCurrentPosition(),
+                front_right_Motor.getCurrentPosition(),
+                back_left_Motor.getCurrentPosition(),
+                back_right_Motor.getCurrentPosition());
         telemetry.update();
 
+        // This loop runs during the INIT phase
+        while (!isStarted() && !isStopRequested()) {
+            telemetry.addData("Selected Auto", autoSelected);
+            telemetry.addData("Press D-Pad Up", "BlueLong");
+            telemetry.addData("Press D-Pad Down", "BlueShort");
+            telemetry.addData("Press D-Pad Left", "RedLong");
+            telemetry.addData("Press D-Pad Right", "RedShort");
+            telemetry.update();
+
+            // Check for controller input to change selection
+            if (gamepad1.dpad_up) {
+                autoSelected = "BlueLong";
+            } else if (gamepad1.dpad_down) {
+                autoSelected = "BlueShort";
+            } else if (gamepad1.dpad_left) {
+                autoSelected = "RedLong";
+            } else if (gamepad1.dpad_right) {
+                autoSelected = "RedShort";
+            }
+            sleep(50); // Add a small delay to avoid excessive polling
+        }
         // Wait for the game to start (driver presses START)
         waitForStart();
 
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  36,  36, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   20,-20 , 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        if (opModeIsActive()) {
+            switch (autoSelected) {
+                case "RedShort":
+                    runRedShortAuto();
+                    break;
+                case "BlueLong":
+                    runBlueLongAuto();
+                    break;
+                case "RedLong":
+                    runRedLongAuto();
+                    break;
+                case "BlueShort":
+                    runBlueShortAuto();
+                    break;
+                default:
+// Default to a safe routine, or do nothing
+                    telemetry.addData("Error", "Invalid auto selected.");
+                    telemetry.update();
+                    break;
+            }
+        }
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        yeeter.update();
-        yeeter.launch();
+
+//        yeeter.launch(true,800);
         sleep(1000);  // pause to display final telemetry message.
     }
+    private void runRedLongAuto()
+    {
+        telemetry.addData("Running", "Red Long Auto");
+        telemetry.update();
+        encoderDrive(DRIVE_SPEED,  183,  183, 5.0);
+        encoderDrive(TURN_SPEED,   -12,-12 , 4.0);
+    }
+    private void runBlueLongAuto()
+    {
+        telemetry.addData("Running", "Blue Long Auto");
+        telemetry.update();
+        encoderDrive(DRIVE_SPEED,  91,  91, 5.0);
+        encoderDrive(TURN_SPEED,   12,-12 , 4.0);
+    }
+
+    private void runBlueShortAuto() {
+        telemetry.addData("Running", "Blue Short Auto");
+        telemetry.update();
+        encoderDrive(DRIVE_SPEED, -48, -48, 5.0);
+    }
+    private void runRedShortAuto()
+    {
+        telemetry.addData("Running", "Red Short Auto");
+        telemetry.update();
+        encoderDrive(DRIVE_SPEED, -48, -48, 5.0);
+    }
+
 
     /*
      *  Method to perform a relative move, based on encoder counts.
@@ -187,16 +251,16 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                   (runtime.seconds() < timeoutS) &&
-                   (front_left_Motor.isBusy() && front_right_Motor.isBusy() && back_left_Motor.isBusy() && back_right_Motor.isBusy())) {
+                    (runtime.seconds() < timeoutS) &&
+                    (front_left_Motor.isBusy() && front_right_Motor.isBusy() && back_left_Motor.isBusy() && back_right_Motor.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
                 telemetry.addData("Currently at",  " at %7d :%7d %7d %7d" ,
-                                            front_left_Motor.getCurrentPosition(),
-                                            front_right_Motor.getCurrentPosition(),
-                                            back_left_Motor.getCurrentPosition(),
-                                            back_left_Motor.getCurrentPosition());
+                        front_left_Motor.getCurrentPosition(),
+                        front_right_Motor.getCurrentPosition(),
+                        back_left_Motor.getCurrentPosition(),
+                        back_left_Motor.getCurrentPosition());
                 telemetry.update();
             }
 
