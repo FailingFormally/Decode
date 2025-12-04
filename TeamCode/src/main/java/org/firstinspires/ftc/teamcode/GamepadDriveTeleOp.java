@@ -16,7 +16,6 @@ public class GamepadDriveTeleOp extends OpMode {
 
     Servo servoLeft;
     Servo servoRight;
-    Eater eater = new Eater();
 
     YeeterKing yeeter = new YeeterKing();
 
@@ -44,7 +43,6 @@ public class GamepadDriveTeleOp extends OpMode {
     @Override
     public void init() {
         drive.init(hardwareMap);
-        eater.init(hardwareMap);
         yeeter.init(hardwareMap, telemetry);
         yeeter.close();
     }
@@ -54,12 +52,10 @@ public class GamepadDriveTeleOp extends OpMode {
         telemetry.addData("LaunchSate",yeeter.getLaunchState());
 
         if (gamepad2.rightBumperWasPressed()) {
-            eater.toggle();
+          //  eater.toggle();
         }
 
-        eater.setPower(gamepad2.right_trigger);
 
-        telemetry.addData("Eater (Intake) Status", eater.status());
         yeeter.update();
 
         if (gamepad2.xWasPressed()) {

@@ -79,17 +79,17 @@ public class LebotAutoDrive extends LinearOpMode {
 
 
     /* Declare OpMode members. */
-    private DcMotor front_left_Motor    = null;
-    private DcMotor front_right_Motor  = null;
-    private DcMotor back_left_Motor    = null;
-    private DcMotor back_right_Motor   = null;
+    private DcMotor front_left_Motor = null;
+    private DcMotor front_right_Motor = null;
+    private DcMotor back_left_Motor = null;
+    private DcMotor back_right_Motor = null;
 
     private AutoState state = AutoState.START;
     private int launchCount = 0;
 
-    private ElapsedTime     runtime = new ElapsedTime();
+    private ElapsedTime runtime = new ElapsedTime();
 
-    private String autoSelected = "RedLong"; // Default autonomous mode
+    private String autoSelected = "RedShort"; // Default autonomous mode
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -98,15 +98,15 @@ public class LebotAutoDrive extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation
-    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
-    static final double     WHEEL_DIAMETER_INCHES   = 4.09449 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    static final double COUNTS_PER_MOTOR_REV = 537.7;    // eg: TETRIX Motor Encoder
+    static final double DRIVE_GEAR_REDUCTION = 1.0;     // No External Gearing.
+    static final double WHEEL_DIAMETER_INCHES = 4.09449;     // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
 
-    static final double     DRIVE_SPEED             = 0.6;
-    static final double     TURN_SPEED              = 0.5;
+    static final double DRIVE_SPEED = 0.6;
+    static final double TURN_SPEED = 0.5;
 
     private YeeterKing yeeter = new YeeterKing();
 
@@ -120,10 +120,10 @@ public class LebotAutoDrive extends LinearOpMode {
         // Initialize the drive system variables.                                                                                              6-7
         yeeter.init(hardwareMap, telemetry);
         eater.init(hardwareMap);
-        front_left_Motor  = hardwareMap.get(DcMotor.class, "FrontLeft1");
+        front_left_Motor = hardwareMap.get(DcMotor.class, "FrontLeft1");
         front_right_Motor = hardwareMap.get(DcMotor.class, "FrontRight0");
-        back_left_Motor   = hardwareMap.get(DcMotor.class, "RearLeft3");
-        back_right_Motor  = hardwareMap.get(DcMotor.class, "RearRight2");
+        back_left_Motor = hardwareMap.get(DcMotor.class, "RearLeft3");
+        back_right_Motor = hardwareMap.get(DcMotor.class, "RearRight2");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -145,7 +145,7 @@ public class LebotAutoDrive extends LinearOpMode {
         back_left_Motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Starting at",  "%7d :%7d",
+        telemetry.addData("Starting at", "%7d :%7d",
                 front_left_Motor.getCurrentPosition(),
                 front_right_Motor.getCurrentPosition(),
                 back_left_Motor.getCurrentPosition(),
@@ -181,6 +181,7 @@ public class LebotAutoDrive extends LinearOpMode {
         timer.reset();
         // Wait for the game to start (driver presses START)
         waitForStart();
+        eater.on();
 
         if (opModeIsActive()) {
             switch (autoSelected) {
@@ -209,40 +210,40 @@ public class LebotAutoDrive extends LinearOpMode {
 //        eater.off();
     }
 
-    private void runRedLongAuto()
-    {
+    private void runRedLongAuto() {
         telemetry.addData("Running", "Red Long Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED,  183,  183, 5.0);
-        encoderDrive(TURN_SPEED,   -12,-12 , 4.0);
-        yeeter.setVelocity(800);
-        yeeter.launch();
+        encoderDrive(DRIVE_SPEED, 183, 183, 5.0);
+        encoderDrive(TURN_SPEED, -12, -12, 4.0);
+        launch();
     }
-    private void runBlueLongAuto()
-    {
+
+    private void runBlueLongAuto() {
         telemetry.addData("Running", "Blue Long Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED,  91,  91, 5.0);
-        encoderDrive(TURN_SPEED,   12,-12 , 4.0);
-        yeeter.setVelocity(800);
-        yeeter.launch();
+        encoderDrive(DRIVE_SPEED, 91, 91, 5.0);
+        encoderDrive(TURN_SPEED, 12, -12, 4.0);
+        launch();
     }
 
     private void runBlueShortAuto() {
         telemetry.addData("Running", "Blue Short Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, -44, -   44, 5.0);
-        yeeter.setVelocity(800);
-        yeeter.launch();
+        encoderDrive(DRIVE_SPEED, -44, -44, 5.0);
+        launch();
     }
-    private void runRedShortAuto()
-    {
+
+    private void runRedShortAuto() {
         telemetry.addData("Running", "Red Short Auto");
         telemetry.addData("State", this.state);
         telemetry.update();
         encoderDrive(DRIVE_SPEED, -44, -44, 30.0);
         launch();
     }
+
+
+
+
 
     private void launch(){
         telemetry.addLine("Launching");
@@ -251,6 +252,8 @@ public class LebotAutoDrive extends LinearOpMode {
         state = AutoState.LAUNCH;
 
         while (opModeIsActive()){
+            //update our outtake state machine
+            yeeter.update();
             telemetry.addData("Auto State", state);
             telemetry.update();
 
@@ -336,8 +339,9 @@ public class LebotAutoDrive extends LinearOpMode {
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (front_left_Motor.isBusy() && front_right_Motor.isBusy() && back_left_Motor.isBusy() && back_right_Motor.isBusy())) {
-
+                    yeeter.update();
                 // Display it for the driver.
+
                 telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
                 telemetry.addData("Currently at",  " at %7d :%7d %7d %7d" ,
                         front_left_Motor.getCurrentPosition(),

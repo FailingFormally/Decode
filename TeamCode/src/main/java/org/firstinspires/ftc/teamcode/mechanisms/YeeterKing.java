@@ -42,7 +42,10 @@ public class YeeterKing {
          * From here, we probably need to return to SPIN_UP to get back to launch
          * velocity.
          */
-        LAUNCHING
+        LAUNCHING,
+
+        LAUNCH3,
+
     }
 
     private boolean hasLaunched = false;
@@ -54,6 +57,8 @@ public class YeeterKing {
     public LaunchState getLaunchState() {
         return launchState;
     }
+
+    private Eater eater = new Eater();
 
     private LaunchState launchState = LaunchState.IDLE;
 
@@ -193,5 +198,6 @@ public class YeeterKing {
 
 
         }
+
     }
 }
