@@ -35,7 +35,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-//import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
+import org.firstinspires.ftc.teamcode.mechanisms.Eater;
+import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
 
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
@@ -61,16 +62,30 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
+ *
  */
 
+
 @Autonomous(name="Auto Select", group="Auto")
-public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
+public class LebotAutoDrive extends LinearOpMode {
+
+    public enum AutoState {
+        START,
+        LAUNCH,
+        LAUNCHING,
+        WAIT,
+        DONE
+    }
+
 
     /* Declare OpMode members. */
     private DcMotor front_left_Motor    = null;
     private DcMotor front_right_Motor  = null;
     private DcMotor back_left_Motor    = null;
     private DcMotor back_right_Motor   = null;
+
+    private AutoState state = AutoState.START;
+    private int launchCount = 0;
 
     private ElapsedTime     runtime = new ElapsedTime();
 
@@ -88,15 +103,23 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 4.09449 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
+
+
     static final double     DRIVE_SPEED             = 0.6;
     static final double     TURN_SPEED              = 0.5;
 
-//    private YeeterKing yeeter = new YeeterKing();
+    private YeeterKing yeeter = new YeeterKing();
+
+    private Eater eater = new Eater();
+
+    private ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void runOpMode() {
 
-        // Initialize the drive system variables.
+        // Initialize the drive system variables.                                                                                              6-7
+        yeeter.init(hardwareMap, telemetry);
+        eater.init(hardwareMap);
         front_left_Motor  = hardwareMap.get(DcMotor.class, "FrontLeft1");
         front_right_Motor = hardwareMap.get(DcMotor.class, "FrontRight0");
         back_left_Motor   = hardwareMap.get(DcMotor.class, "RearLeft3");
@@ -109,6 +132,7 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
         front_right_Motor.setDirection(DcMotor.Direction.REVERSE);
         back_left_Motor.setDirection(DcMotorSimple.Direction.FORWARD);
         back_right_Motor.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         front_left_Motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         front_right_Motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -149,6 +173,12 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
             }
             sleep(50); // Add a small delay to avoid excessive polling
         }
+
+        yeeter.close();
+        yeeter.setVelocity(800);
+        yeeter.spinUp();
+
+        timer.reset();
         // Wait for the game to start (driver presses START)
         waitForStart();
 
@@ -172,18 +202,21 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
                     telemetry.update();
                     break;
             }
+
+            eater.off();
         }
-
-
-//        yeeter.launch(true,800);
-        sleep(1000);  // pause to display final telemetry message.
+//        sleep(1000);  // pause to display final telemetry message.
+//        eater.off();
     }
+
     private void runRedLongAuto()
     {
         telemetry.addData("Running", "Red Long Auto");
         telemetry.update();
         encoderDrive(DRIVE_SPEED,  183,  183, 5.0);
         encoderDrive(TURN_SPEED,   -12,-12 , 4.0);
+        yeeter.setVelocity(800);
+        yeeter.launch();
     }
     private void runBlueLongAuto()
     {
@@ -191,18 +224,68 @@ public class RobotAutoDriveByEncoder_Linear extends LinearOpMode {
         telemetry.update();
         encoderDrive(DRIVE_SPEED,  91,  91, 5.0);
         encoderDrive(TURN_SPEED,   12,-12 , 4.0);
+        yeeter.setVelocity(800);
+        yeeter.launch();
     }
 
     private void runBlueShortAuto() {
         telemetry.addData("Running", "Blue Short Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, -48, -48, 5.0);
+        encoderDrive(DRIVE_SPEED, -44, -   44, 5.0);
+        yeeter.setVelocity(800);
+        yeeter.launch();
     }
     private void runRedShortAuto()
     {
         telemetry.addData("Running", "Red Short Auto");
+        telemetry.addData("State", this.state);
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, -48, -48, 5.0);
+        encoderDrive(DRIVE_SPEED, -44, -44, 30.0);
+        launch();
+    }
+
+    private void launch(){
+        telemetry.addLine("Launching");
+        telemetry.update();
+
+        state = AutoState.LAUNCH;
+
+        while (opModeIsActive()){
+            telemetry.addData("Auto State", state);
+            telemetry.update();
+
+            switch (state) {
+                case LAUNCH:
+                    timer.reset();
+                    yeeter.launch();
+                    state = AutoState.LAUNCHING;
+                    break;
+                case LAUNCHING:
+                    if (yeeter.isReady() ) {
+                        state = AutoState.WAIT;
+                    }
+                case WAIT:
+                    if (timer.seconds() > 2)  {
+                        launchCount += 1;
+                        timer.reset();
+                        if (launchCount >= 3) {
+                            state = AutoState.DONE;
+                        } else {
+                            state = AutoState.LAUNCH;
+                        }
+                    } else {
+                        sleep(250);
+                    }
+                    break;
+                case DONE:
+                    requestOpModeStop();
+                    break;
+            }
+        }
+    }
+
+    public boolean isBusy() {
+        return front_left_Motor.isBusy() || front_right_Motor.isBusy() || back_left_Motor.isBusy() || back_right_Motor.isBusy();
     }
 
 

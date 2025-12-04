@@ -83,6 +83,7 @@ public class YeeterKing {
         servo1.setPosition(0);
         servo2.setPosition(0);
     }
+
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
         timer = new ElapsedTime();
         yeetWheelLeft = hardwareMap.get(DcMotorEx.class, "flywheel_left");
@@ -108,8 +109,6 @@ public class YeeterKing {
 
         servo2 = hardwareMap.get(Servo.class, "servo2");
         //servo2.setDirection(Servo.Direction.FORWARD);
-
-
     }
 
     public void stop(){
@@ -131,6 +130,16 @@ public class YeeterKing {
         this.velocity = velocity;
     }
 
+    public void spinUp() {
+        this.launchState = LaunchState.SPIN_UP;
+        yeetWheelLeft.setVelocity(velocity);
+        yeetWheelNotLeft.setVelocity(velocity);
+    }
+
+    public boolean isReady() {
+        return launchState == LaunchState.READY;
+    }
+
     public void update() {
 
         // If we have already launched, and a new shot is requested,
@@ -146,8 +155,6 @@ public class YeeterKing {
                 if (shotRequested) {
                     launchState = LaunchState.SPIN_UP;
                 }
-
-
                     break;
             case SPIN_UP:
                 close();
@@ -164,9 +171,8 @@ public class YeeterKing {
                 break;
 
             case READY:
-                if(hasLaunched == false){
+                if(hasLaunched == false && shotRequested == true){
                     launchState= launchState.LAUNCH;
-
                 }
                 break;
 
