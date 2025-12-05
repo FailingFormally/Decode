@@ -59,8 +59,6 @@ public class YeeterKing {
         return launchState;
     }
 
-    private Eater eater = new Eater();
-
     private LaunchState launchState = LaunchState.IDLE;
 
     public void setDirection(DcMotor.Direction direction) {
