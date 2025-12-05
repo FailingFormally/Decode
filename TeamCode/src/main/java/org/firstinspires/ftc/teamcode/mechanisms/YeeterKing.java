@@ -175,7 +175,7 @@ public class YeeterKing {
                 if (shotRequested) {
                     launchState = LaunchState.SPIN_UP;
                 }
-                    break;
+                break;
             case SPIN_UP:
                 close();
                 // telemetry.addData("LaunchState", launchState);
@@ -191,8 +191,8 @@ public class YeeterKing {
                 break;
 
             case READY:
-                if(hasLaunched == false && shotRequested == true){
-                    launchState= launchState.LAUNCH;
+                if (hasLaunched == false && shotRequested == true) {
+                    launchState = launchState.LAUNCH;
                 }
                 break;
 
@@ -208,12 +208,12 @@ public class YeeterKing {
                 shotRequested = false;
                 if (timer.seconds() > .8) {
                     close();
+                }
+                if (timer.seconds() > 1.2) {
                     launchState = LaunchState.SPIN_UP;
                     eater.on(); // Re-engage the intake after closing
                 }
                 break;
-
-
         }
 
     }

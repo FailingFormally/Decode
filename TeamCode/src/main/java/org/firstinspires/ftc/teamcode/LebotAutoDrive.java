@@ -172,7 +172,6 @@ public class LebotAutoDrive extends LinearOpMode {
 
         yeeter.close();
         yeeter.setVelocity(800);
-        yeeter.spinUp();
 
         timer.reset();
         // Wait for the game to start (driver presses START)
@@ -243,10 +242,13 @@ public class LebotAutoDrive extends LinearOpMode {
         telemetry.update();
 
         state = AutoState.LAUNCH;
+        yeeter.setVelocity(800);
 
         while (opModeIsActive()){
             //update our outtake state machine
             yeeter.update();
+
+            yeeter.printTelemetry();
             telemetry.addData("Auto State", state);
             telemetry.update();
 
@@ -332,7 +334,7 @@ public class LebotAutoDrive extends LinearOpMode {
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     (front_left_Motor.isBusy() && front_right_Motor.isBusy() && back_left_Motor.isBusy() && back_right_Motor.isBusy())) {
-                    yeeter.update();
+                yeeter.update();
                 // Display it for the driver.
 
                 telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
@@ -341,6 +343,7 @@ public class LebotAutoDrive extends LinearOpMode {
                         front_right_Motor.getCurrentPosition(),
                         back_left_Motor.getCurrentPosition(),
                         back_left_Motor.getCurrentPosition());
+                yeeter.printTelemetry();
                 telemetry.update();
             }
 
