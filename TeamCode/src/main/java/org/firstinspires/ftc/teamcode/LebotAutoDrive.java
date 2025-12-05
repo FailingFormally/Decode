@@ -109,9 +109,6 @@ public class LebotAutoDrive extends LinearOpMode {
     static final double TURN_SPEED = 0.5;
 
     private YeeterKing yeeter = new YeeterKing();
-
-    private Eater eater = new Eater();
-
     private ElapsedTime timer = new ElapsedTime();
 
     @Override
@@ -119,7 +116,6 @@ public class LebotAutoDrive extends LinearOpMode {
 
         // Initialize the drive system variables.                                                                                              6-7
         yeeter.init(hardwareMap, telemetry);
-        eater.init(hardwareMap);
         front_left_Motor = hardwareMap.get(DcMotor.class, "FrontLeft1");
         front_right_Motor = hardwareMap.get(DcMotor.class, "FrontRight0");
         back_left_Motor = hardwareMap.get(DcMotor.class, "RearLeft3");
@@ -181,7 +177,6 @@ public class LebotAutoDrive extends LinearOpMode {
         timer.reset();
         // Wait for the game to start (driver presses START)
         waitForStart();
-        eater.on();
 
         if (opModeIsActive()) {
             switch (autoSelected) {
@@ -204,10 +199,8 @@ public class LebotAutoDrive extends LinearOpMode {
                     break;
             }
 
-            eater.off();
+            yeeter.turnOffEater();
         }
-//        sleep(1000);  // pause to display final telemetry message.
-//        eater.off();
     }
 
     private void runRedLongAuto() {

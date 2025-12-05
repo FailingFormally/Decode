@@ -14,20 +14,12 @@ import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
 public class GamepadDriveTeleOp extends OpMode {
     MecanumDrive drive = new MecanumDrive(telemetry);
 
-    Servo servoLeft;
-    Servo servoRight;
-
     YeeterKing yeeter = new YeeterKing();
 
     final double FULL_SPEED = 0.5;
     final double NORMAL_SPEED = 0.3;
 
     boolean turboEnabled = false;
-
-
-
-
-
 
     double getSpeed() {
         if (turboEnabled)
@@ -52,9 +44,8 @@ public class GamepadDriveTeleOp extends OpMode {
         telemetry.addData("LaunchSate",yeeter.getLaunchState());
 
         if (gamepad2.rightBumperWasPressed()) {
-          //  eater.toggle();
+          yeeter.toggleEater();
         }
-
 
         yeeter.update();
 

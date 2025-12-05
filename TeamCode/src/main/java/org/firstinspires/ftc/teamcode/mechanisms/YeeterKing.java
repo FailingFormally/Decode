@@ -25,6 +25,7 @@ public class YeeterKing {
 
     private ElapsedTime timer;
 
+    private Eater eater = new Eater();
 
     private enum LaunchState {
         /**
@@ -89,6 +90,18 @@ public class YeeterKing {
         servo2.setPosition(0);
     }
 
+    public boolean toggleEater() {
+        return eater.toggle();
+    }
+
+    public void turnOnEater() {
+        eater.on();
+    }
+
+    public void turnOffEater() {
+        eater.off();
+    }
+
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
         timer = new ElapsedTime();
         yeetWheelLeft = hardwareMap.get(DcMotorEx.class, "flywheel_left");
@@ -114,6 +127,8 @@ public class YeeterKing {
 
         servo2 = hardwareMap.get(Servo.class, "servo2");
         //servo2.setDirection(Servo.Direction.FORWARD);
+
+        eater.init(hardwareMap);
     }
 
     public void stop(){
@@ -182,6 +197,7 @@ public class YeeterKing {
                 break;
 
             case LAUNCH:
+                eater.off(); // turn off the intake before pushing
                 push();
                 timer.reset();
                 launchState = LaunchState.LAUNCHING;
@@ -193,6 +209,7 @@ public class YeeterKing {
                 if (timer.seconds() > .8) {
                     close();
                     launchState = LaunchState.SPIN_UP;
+                    eater.on(); // Re-engage the intake after closing
                 }
                 break;
 
