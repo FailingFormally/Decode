@@ -16,8 +16,8 @@ public class GamepadDriveTeleOp extends OpMode {
 
     YeeterKing yeeter = new YeeterKing();
 
-    final double FULL_SPEED = 0.5;
-    final double NORMAL_SPEED = 0.3;
+    final double FULL_SPEED = 0.7;
+    final double NORMAL_SPEED = 0.5;
 
     boolean turboEnabled = false;
 
@@ -82,7 +82,7 @@ public class GamepadDriveTeleOp extends OpMode {
             turboEnabled = false;
         }
 
-        if(gamepad1.left_trigger >0){
+        if(gamepad2.left_trigger >0){
             yeeter.open();
         }
 

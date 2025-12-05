@@ -109,6 +109,9 @@ public class LebotAutoDrive extends LinearOpMode {
     static final double TURN_SPEED = 0.5;
 
     private YeeterKing yeeter = new YeeterKing();
+
+    private Eater eater = new Eater();
+
     private ElapsedTime timer = new ElapsedTime();
 
     @Override
@@ -116,6 +119,7 @@ public class LebotAutoDrive extends LinearOpMode {
 
         // Initialize the drive system variables.                                                                                              6-7
         yeeter.init(hardwareMap, telemetry);
+        eater.init(hardwareMap);
         front_left_Motor = hardwareMap.get(DcMotor.class, "FrontLeft1");
         front_right_Motor = hardwareMap.get(DcMotor.class, "FrontRight0");
         back_left_Motor = hardwareMap.get(DcMotor.class, "RearLeft3");
@@ -198,8 +202,10 @@ public class LebotAutoDrive extends LinearOpMode {
                     break;
             }
 
-            yeeter.turnOffEater();
+            eater.off();
         }
+//        sleep(1000);  // pause to display final telemetry message.
+//        eater.off();
     }
 
     private void runRedLongAuto() {
@@ -231,6 +237,7 @@ public class LebotAutoDrive extends LinearOpMode {
         telemetry.update();
         encoderDrive(DRIVE_SPEED, -44, -44, 30.0);
         launch();
+        sleep(5000);
     }
 
 
@@ -256,7 +263,7 @@ public class LebotAutoDrive extends LinearOpMode {
                 case LAUNCH:
                     timer.reset();
                     yeeter.launch();
-                    state = AutoState.LAUNCHING;
+                    state = AutoState.WAIT;
                     break;
                 case LAUNCHING:
                     if (yeeter.isReady() ) {
@@ -266,17 +273,18 @@ public class LebotAutoDrive extends LinearOpMode {
                     if (timer.seconds() > 2)  {
                         launchCount += 1;
                         timer.reset();
-                        if (launchCount >= 3) {
+                        state = AutoState.LAUNCH;
+                        /*if (launchCount >= 3) {
                             state = AutoState.DONE;
                         } else {
                             state = AutoState.LAUNCH;
-                        }
+                        }*/
                     } else {
                         sleep(250);
                     }
                     break;
                 case DONE:
-                    requestOpModeStop();
+                    //requestOpModeStop();
                     break;
             }
         }

@@ -207,7 +207,7 @@ public class YeeterKing {
                 if (timer.seconds() > .8) {
                     close();
                 }
-                if (timer.seconds() > 1.2) {
+                if (timer.seconds() > 1.8) {
                     launchState = LaunchState.SPIN_UP;
                     eater.on(); // Re-engage the intake after closing
                 }
