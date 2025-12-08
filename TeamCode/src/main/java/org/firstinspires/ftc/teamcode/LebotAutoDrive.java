@@ -36,17 +36,18 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.Eater;
+import org.firstinspires.ftc.teamcode.mechanisms.LaunchAllYeeterKing;
 import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
 
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
  * The code is structured as a LinearOpMode
- *
+
  * The code REQUIRES that you DO have encoders on the wheels,
  *   otherwise you would use: RobotAutoDriveByTime;
  *
  *  This code ALSO requires that the drive Motors have been configured such that a positive
- *  power command moves them forward, and causes the encoders to count UP.
+   power command moves them forward, and causes the encoders to count UP.
  *
  *   The desired path in this example is:
  *   - Drive forward for 48 inches
@@ -69,23 +70,11 @@ import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
 @Autonomous(name="Auto Select", group="Auto")
 public class LebotAutoDrive extends LinearOpMode {
 
-    public enum AutoState {
-        START,
-        LAUNCH,
-        LAUNCHING,
-        WAIT,
-        DONE
-    }
-
-
     /* Declare OpMode members. */
     private DcMotor front_left_Motor = null;
     private DcMotor front_right_Motor = null;
     private DcMotor back_left_Motor = null;
     private DcMotor back_right_Motor = null;
-
-    private AutoState state = AutoState.START;
-    private int launchCount = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -105,10 +94,15 @@ public class LebotAutoDrive extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
 
+    static final double LONG_DISTANCE = 39.0;
+    static final double LONG_TURN_DISTANCE = 6;
+
+    static final double SHORT_DISTANCE = 48.0;
+
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
 
-    private YeeterKing yeeter = new YeeterKing();
+    private LaunchAllYeeterKing yeeter = new LaunchAllYeeterKing();
 
     private Eater eater = new Eater();
 
@@ -175,11 +169,11 @@ public class LebotAutoDrive extends LinearOpMode {
         }
 
         yeeter.close();
-        yeeter.setVelocity(800);
+        yeeter.setVelocity(900);
 
-        timer.reset();
         // Wait for the game to start (driver presses START)
         waitForStart();
+        yeeter.spinUp();;
 
         if (opModeIsActive()) {
             switch (autoSelected) {
@@ -196,7 +190,7 @@ public class LebotAutoDrive extends LinearOpMode {
                     runBlueShortAuto();
                     break;
                 default:
-// Default to a safe routine, or do nothing
+                    // Default to a safe routine, or do nothing
                     telemetry.addData("Error", "Invalid auto selected.");
                     telemetry.update();
                     break;
@@ -204,90 +198,52 @@ public class LebotAutoDrive extends LinearOpMode {
 
             eater.off();
         }
-//        sleep(1000);  // pause to display final telemetry message.
-//        eater.off();
     }
 
     private void runRedLongAuto() {
         telemetry.addData("Running", "Red Long Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, 187, 187, 5.0);
-        encoderDrive(TURN_SPEED, -12, -12, 4.0);
+        encoderDrive(DRIVE_SPEED, LONG_DISTANCE, LONG_DISTANCE, 5.0);
+        encoderDrive(TURN_SPEED, -LONG_TURN_DISTANCE, LONG_TURN_DISTANCE, 4.0);
         launch();
     }
 
     private void runBlueLongAuto() {
         telemetry.addData("Running", "Blue Long Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, 95, 95, 5.0);
-        encoderDrive(TURN_SPEED, -12, -12, 4.0);
+        encoderDrive(DRIVE_SPEED, LONG_DISTANCE, LONG_DISTANCE, 5.0);
+        encoderDrive(TURN_SPEED, LONG_TURN_DISTANCE, -LONG_TURN_DISTANCE, 4.0);
         launch();
     }
 
     private void runBlueShortAuto() {
         telemetry.addData("Running", "Blue Short Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, -50, -50, 5.0);
+        encoderDrive(DRIVE_SPEED, -SHORT_DISTANCE, -SHORT_DISTANCE, 5.0);
         launch();
+
     }
 
-    private void runRedShortAuto() {
+    private void runRedShortAuto(){
+
         telemetry.addData("Running", "Red Short Auto");
-        telemetry.addData("State", this.state);
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, -48, -48, 30.0);
+        encoderDrive(DRIVE_SPEED, -SHORT_DISTANCE, -SHORT_DISTANCE, 30.0);
         launch();
-        sleep(5000);
     }
-
-
-
-
 
     private void launch(){
-        telemetry.addLine("Launching");
-        telemetry.update();
 
-        state = AutoState.LAUNCH;
         yeeter.setVelocity(900);
+        yeeter.launchAll();
+        timer.reset();
 
-        while (opModeIsActive()){
-            //update our outtake state machine
+        while (opModeIsActive() && timer.seconds() < 3) {
             yeeter.update();
-
-            yeeter.printTelemetry();
-            telemetry.addData("Auto State", state);
-            telemetry.update();
-
-            switch (state) {
-                case LAUNCH:
-                    timer.reset();
-                    yeeter.launch();
-                    state = AutoState.WAIT;
-                    break;
-                case LAUNCHING:
-                    if (yeeter.isReady() ) {
-                        state = AutoState.WAIT;
-                    }
-                case WAIT:
-                    if (timer.seconds() > 2)  {
-                        launchCount += 1;
-                        timer.reset();
-                        state = AutoState.LAUNCH;
-                        /*if (launchCount >= 3) {
-                            state = AutoState.DONE;
-                        } else {
-                            state = AutoState.LAUNCH;
-                        }*/
-                    } else {
-                        sleep(250);
-                    }
-                    break;
-                case DONE:
-                    //requestOpModeStop();
-                    break;
-            }
         }
+
+        eater.off();
+        yeeter.stop();
     }
 
     public boolean isBusy() {
@@ -371,3 +327,11 @@ public class LebotAutoDrive extends LinearOpMode {
         }
     }
 }
+
+
+
+
+
+
+                                                                                                 // if you're reading this
+                                                                                                 // why did you scroll this far???

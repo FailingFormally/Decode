@@ -168,6 +168,7 @@ public class YeeterKing {
 
         switch (launchState) {
             case IDLE:
+                close();
                 // telemetry.addData("LaunchState", launchState);
                 // telemetry.addData("LaunchVelocity",shootVelocity);
                 if (shotRequested) {
@@ -189,6 +190,7 @@ public class YeeterKing {
                 break;
 
             case READY:
+                close();
                 if (hasLaunched == false && shotRequested == true) {
                     launchState = launchState.LAUNCH;
                 }

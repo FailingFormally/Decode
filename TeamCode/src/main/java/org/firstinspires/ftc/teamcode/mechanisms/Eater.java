@@ -32,12 +32,12 @@ public class Eater {
 
     public void on() {
         isEating = true;
-        eaterMotor.setPower(1);
+        eaterMotor.setPower(0.7);
     }
 
     public void off() {
         isEating = false;
-        eaterMotor.setPower(0);
+        eaterMotor.setPower(0.7);
     }
 
     public  void setPower(double power) {

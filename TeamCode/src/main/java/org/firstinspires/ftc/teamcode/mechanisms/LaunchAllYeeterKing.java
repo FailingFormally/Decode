@@ -56,10 +56,12 @@ public class LaunchAllYeeterKing {
     public void launch() {
         shotRequested = true;
         isTripleShot = false;
+        launchState = LaunchState.SPIN_UP;
     }
     public void launchAll() {
         shotRequested = true;
         isTripleShot = true;
+        launchState = LaunchState.SPIN_UP;
     }
 
     public LaunchState getLaunchState() {
@@ -80,8 +82,8 @@ public class LaunchAllYeeterKing {
 
     public void open()
     {
-        servo1.setPosition(.15);
-        servo2.setPosition(.15);
+        servo1.setPosition(.1);
+        servo2.setPosition(.1);
     }
 
     public void push()
@@ -175,6 +177,7 @@ public class LaunchAllYeeterKing {
 
         switch (launchState) {
             case IDLE:
+                close();
                 // telemetry.addData("LaunchState", launchState);
                 // telemetry.addData("LaunchVelocity",shootVelocity);
                 if (shotRequested) {
@@ -196,8 +199,13 @@ public class LaunchAllYeeterKing {
                 break;
 
             case READY:
+                close();
                 if (hasLaunched == false && shotRequested == true) {
-                    launchState = launchState.LAUNCH;
+                    if (isTripleShot) {
+                        launchState = LaunchState.LAUNCH3;
+                    } else {
+                        launchState = LaunchState.LAUNCH;
+                    }
                 }
                 break;
 
@@ -231,6 +239,7 @@ public class LaunchAllYeeterKing {
             case LAUNCHING3:
                 hasLaunched = true;
                 shotRequested = false;
+                isTripleShot = false;
                 if (timer.seconds() > 2) {
                     close();
                     launchState = LaunchState.SPIN_UP;
