@@ -211,7 +211,7 @@ public class LebotAutoDrive extends LinearOpMode {
     private void runRedLongAuto() {
         telemetry.addData("Running", "Red Long Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, 183, 183, 5.0);
+        encoderDrive(DRIVE_SPEED, 187, 187, 5.0);
         encoderDrive(TURN_SPEED, -12, -12, 4.0);
         launch();
     }
@@ -219,15 +219,15 @@ public class LebotAutoDrive extends LinearOpMode {
     private void runBlueLongAuto() {
         telemetry.addData("Running", "Blue Long Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, 91, 91, 5.0);
-        encoderDrive(TURN_SPEED, 12, -12, 4.0);
+        encoderDrive(DRIVE_SPEED, 95, 95, 5.0);
+        encoderDrive(TURN_SPEED, -12, -12, 4.0);
         launch();
     }
 
     private void runBlueShortAuto() {
         telemetry.addData("Running", "Blue Short Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, -44, -44, 5.0);
+        encoderDrive(DRIVE_SPEED, -50, -50, 5.0);
         launch();
     }
 
@@ -235,7 +235,7 @@ public class LebotAutoDrive extends LinearOpMode {
         telemetry.addData("Running", "Red Short Auto");
         telemetry.addData("State", this.state);
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, -44, -44, 30.0);
+        encoderDrive(DRIVE_SPEED, -48, -48, 30.0);
         launch();
         sleep(5000);
     }
@@ -249,7 +249,7 @@ public class LebotAutoDrive extends LinearOpMode {
         telemetry.update();
 
         state = AutoState.LAUNCH;
-        yeeter.setVelocity(800);
+        yeeter.setVelocity(900);
 
         while (opModeIsActive()){
             //update our outtake state machine
@@ -299,7 +299,7 @@ public class LebotAutoDrive extends LinearOpMode {
      *  Method to perform a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
      *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
+     *  1) Move gets to the desire position
      *  2) Move runs out of time
      *  3) Driver stops the OpMode running.
      */
