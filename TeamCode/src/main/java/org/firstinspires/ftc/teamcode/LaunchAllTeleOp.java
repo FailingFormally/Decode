@@ -48,17 +48,17 @@ public class LaunchAllTeleOp extends OpMode {
 
         if (gamepad2.xWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(800);
+            yeeter.setVelocity(900);
             yeeter.launch();
         }
         if (gamepad2.yWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(1100);
+            yeeter.setVelocity(1000);
             yeeter.launch();
         }
         if (gamepad2.bWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(1500);
+            yeeter.setVelocity(1100);
             yeeter.launch();
         }
         if (gamepad2.aWasPressed()) {
@@ -68,12 +68,12 @@ public class LaunchAllTeleOp extends OpMode {
 
         if (gamepad2.leftBumperWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(800);
+            yeeter.setVelocity(900);
             yeeter.launchAll();
         }
         if (gamepad2.rightBumperWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(1100);
+            yeeter.setVelocity(1000);
             yeeter.launchAll();
         }
 
