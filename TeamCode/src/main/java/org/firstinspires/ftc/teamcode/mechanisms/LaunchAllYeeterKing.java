@@ -11,6 +11,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LaunchAllYeeterKing {
 
+    public static double SHORT = 800;
+    public static double MEDIUM = 900;
+    public static double LONG = 1000;
+
     private boolean isYeeting;
     private DcMotorEx yeetWheelLeft;
     private DcMotorEx yeetWheelNotLeft;
@@ -219,7 +223,7 @@ public class LaunchAllYeeterKing {
             case LAUNCH3:
                 eater.off();
                 open();
-                eater.on();
+                eater.on(1.0);
                 timer.reset();
                 launchState = LaunchState.LAUNCHING3;
                 break;
@@ -242,6 +246,7 @@ public class LaunchAllYeeterKing {
                 isTripleShot = false;
                 if (timer.seconds() > 2) {
                     close();
+                    eater.on(0.7);
                     launchState = LaunchState.SPIN_UP;
                 }
                 break;

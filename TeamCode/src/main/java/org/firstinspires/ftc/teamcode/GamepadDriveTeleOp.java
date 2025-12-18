@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 //import org.firstinspires.ftc.teamcode.mechanisms.Eater;
 import org.firstinspires.ftc.teamcode.mechanisms.Eater;
+import org.firstinspires.ftc.teamcode.mechanisms.LaunchAllYeeterKing;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
 
@@ -51,17 +52,17 @@ public class GamepadDriveTeleOp extends OpMode {
 
         if (gamepad2.xWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(900);
+            yeeter.setVelocity(LaunchAllYeeterKing.SHORT);
             yeeter.launch();
         }
         if (gamepad2.yWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(1000);
+            yeeter.setVelocity(LaunchAllYeeterKing.MEDIUM);
             yeeter.launch();
         }
         if (gamepad2.bWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(1100);
+            yeeter.setVelocity(LaunchAllYeeterKing.LONG);
             yeeter.launch();
         }
         if (gamepad2.aWasPressed()) {

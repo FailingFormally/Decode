@@ -45,7 +45,7 @@ public class LaunchAllTeleOp extends OpMode {
     public void loop() {
         telemetry.addData("LaunchSate",yeeter.getLaunchState());
 
-        if (gamepad2.rightBumperWasPressed()) {
+        if (gamepad2.right_trigger > 0) {
           yeeter.toggleEater();
         }
 
@@ -53,17 +53,17 @@ public class LaunchAllTeleOp extends OpMode {
 
         if (gamepad2.xWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(600);
+            yeeter.setVelocity(LaunchAllYeeterKing.SHORT);
             yeeter.launch();
         }
         if (gamepad2.yWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(700);
+            yeeter.setVelocity(LaunchAllYeeterKing.MEDIUM);
             yeeter.launch();
         }
         if (gamepad2.bWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(800);
+            yeeter.setVelocity(LaunchAllYeeterKing.LONG);
             yeeter.launch();
         }
         if (gamepad2.aWasPressed()) {
@@ -73,12 +73,12 @@ public class LaunchAllTeleOp extends OpMode {
 
         if (gamepad2.leftBumperWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(600);
+            yeeter.setVelocity(LaunchAllYeeterKing.SHORT);
             yeeter.launchAll();
         }
         if (gamepad2.rightBumperWasPressed()) {
             yeeter.setDirection(DcMotor.Direction.FORWARD);
-            yeeter.setVelocity(700);
+            yeeter.setVelocity(LaunchAllYeeterKing.LONG);
             yeeter.launchAll();
         }
 

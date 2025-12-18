@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.mechanisms.Eater;
 import org.firstinspires.ftc.teamcode.mechanisms.LaunchAllYeeterKing;
-import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
+//import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
 
 /*
  * This OpMode illustrates the concept of driving a path based on encoder counts.
@@ -52,7 +52,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
  *   The desired path in this example is:
  *   - Drive forward for 48 inches
  *   - Spin right for 12 Inches
- *   - Drive Backward for 24 inches
+ *   - Drive Backward for 24 inchesr
  *   - Stop and close the claw.
  *
  *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
@@ -66,9 +66,19 @@ import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
  *
  */
 
+enum MenuState {
+    AUTO_MENU,
 
-@Autonomous(name="Auto Select", group="Auto")
-public class LebotAutoDrive extends LinearOpMode {
+    DRIVE_MENU,
+    LAUNCH_MENU,
+    TURN_MENU,
+
+    DONE,
+}
+
+@Autonomous(name="Lebot Auto Drive v2", group="Auto")
+public class LebotAutoDrivev2 extends LinearOpMode {
+
 
     /* Declare OpMode members. */
     private DcMotor front_left_Motor = null;
@@ -76,9 +86,13 @@ public class LebotAutoDrive extends LinearOpMode {
     private DcMotor back_left_Motor = null;
     private DcMotor back_right_Motor = null;
 
+
     private ElapsedTime runtime = new ElapsedTime();
 
     private String autoSelected = "RedShort"; // Default autonomous mode
+
+    private MenuState menuState = MenuState.AUTO_MENU;
+
 
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
@@ -94,30 +108,71 @@ public class LebotAutoDrive extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
 
-    static final double LONG_DISTANCE = 39.0;
-    static final double LONG_TURN_DISTANCE = 6;
-
-    static final double SHORT_DISTANCE = 48.0;
-
+    private double driveDistance = 39.0;
+    // the distance you go in long auto
+    private double turnDistance = 6;
+    // the distance in which you turn in long auto
+    private  double launchSpeed = 900;
+    private final double DRIVE_TIMEOUT = 30.0;
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+
 
     private LaunchAllYeeterKing yeeter = new LaunchAllYeeterKing();
 
     private Eater eater = new Eater();
 
+    private boolean wasX, wasBack;
+
     private ElapsedTime timer = new ElapsedTime();
 
+    private void printAutoMenu()
+    {
+        telemetry.addData("Selected Auto", autoSelected);
+        telemetry.addData("Press D-Pad Up", "BlueLong");
+        telemetry.addData("Press D-Pad Down", "BlueShort");
+        telemetry.addData("Press D-Pad Left", "RedLong");
+        telemetry.addData("Press D-Pad Right", "RedShort");
+        telemetry.addLine("Press X to go to next menu");
+
+    }
+    private void printDriveMenu()
+    {
+        telemetry.addData("Drive Distance", driveDistance);
+        telemetry.addData("Press D-Pad Up", "+1 inch");
+        telemetry.addData("Press D-Pad Down", "-1 inch");
+        telemetry.addLine("Press X to go to next menu");
+        telemetry.addLine("Press Back to go to previous menu");
+
+    }
+    private void printLaunchMenu()
+    {
+        telemetry.addData("Launch Speed", launchSpeed);
+        telemetry.addData("Press D-Pad Up", "+1 inch");
+        telemetry.addData("Press D-Pad Down", "-1 inch");
+        telemetry.addLine("Press X to go to next menu");
+        telemetry.addLine("Press Back to go to previous menu");
+    }
+    private void printTurnMenu() {
+        telemetry.addData("Turn Distance", turnDistance);
+        telemetry.addData("Press D-Pad Up", "+0.5 inch");
+        telemetry.addData("Press D-Pad Down", "-0.5 inch");
+        telemetry.addLine("Press Back to go to previous menu");
+    }
     @Override
     public void runOpMode() {
 
-        // Initialize the drive system variables.                                                                                              6-7
+        //Initialize the drive system variables.                                                                                              6-7
         yeeter.init(hardwareMap, telemetry);
         eater.init(hardwareMap);
-        front_left_Motor = hardwareMap.get(DcMotor.class, "FrontLeft1");
-        front_right_Motor = hardwareMap.get(DcMotor.class, "FrontRight0");
-        back_left_Motor = hardwareMap.get(DcMotor.class, "RearLeft3");
-        back_right_Motor = hardwareMap.get(DcMotor.class, "RearRight2");
+//        front_left_Motor = hardwareMap.get(DcMotor.class, "FrontLeft1");
+//        front_right_Motor = hardwareMap.get(DcMotor.class, "FrontRight0");
+//        back_left_Motor = hardwareMap.get(DcMotor.class, "RearLeft3");
+//        back_right_Motor = hardwareMap.get(DcMotor.class, "RearRight2");
+        front_left_Motor = hardwareMap.get(DcMotor.class, "front_left_motor");
+        front_right_Motor = hardwareMap.get(DcMotor.class, "front_right_motor");
+        back_left_Motor = hardwareMap.get(DcMotor.class, "back_left_motor");
+        back_right_Motor = hardwareMap.get(DcMotor.class, "back_right_motor");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -148,30 +203,84 @@ public class LebotAutoDrive extends LinearOpMode {
 
         // This loop runs during the INIT phase
         while (!isStarted() && !isStopRequested()) {
-            telemetry.addData("Selected Auto", autoSelected);
-            telemetry.addData("Press D-Pad Up", "BlueLong");
-            telemetry.addData("Press D-Pad Down", "BlueShort");
-            telemetry.addData("Press D-Pad Left", "RedLong");
-            telemetry.addData("Press D-Pad Right", "RedShort");
-            telemetry.update();
+            telemetry.addData("Menu State", menuState);
+            switch (menuState) {
+                case AUTO_MENU:
+                    printAutoMenu();
+                    if (gamepad1.dpad_up) {
+                        autoSelected = "BlueLong";
+                    } else if (gamepad1.dpad_down) {
+                        autoSelected = "BlueShort";
+                    } else if (gamepad1.dpad_left) {
+                        autoSelected = "RedLong";
+                    } else if (gamepad1.dpad_right) {
+                        autoSelected = "RedShort";
+                    }
+                    if (gamepad1.x && !wasX) {
+                        menuState = MenuState.DRIVE_MENU;
+                    }
+                    break;
+                case DRIVE_MENU:
+                    printDriveMenu();
+                    if (gamepad1.dpad_up) {
+                        driveDistance = driveDistance + 1;
+                    }
+                    if (gamepad1.dpad_down) {
+                        driveDistance = driveDistance - 1;
+                    }
+                    if (gamepad1.x && !wasX) {
+                        menuState = MenuState.LAUNCH_MENU;
+                    }
+                    if (gamepad1.back && !wasBack) {
+                        menuState = MenuState.AUTO_MENU;
+                    }
+                    break;
+                case LAUNCH_MENU:
+                    printLaunchMenu();
+                    if (gamepad1.dpad_up) {
+                        launchSpeed = launchSpeed + 50;
+                    }
+                    if (gamepad1.dpad_down) {
+                        launchSpeed = launchSpeed - 50;
+                    }
+                    if (autoSelected.equals("RedLong") || autoSelected.equals("BlueLong")) {
+                        menuState = MenuState.TURN_MENU;
+                    } else {
+                        menuState = MenuState.DONE;
+                    }
+                    if (gamepad1.back && !wasBack) {
+                        menuState = MenuState.DRIVE_MENU;
+                    }
+                    break;
+                case TURN_MENU:
+                    printTurnMenu();
+                    if (gamepad1.dpad_up) {
+                        turnDistance = turnDistance + 0.5;
+                    }
+                    if (gamepad1.dpad_down) {
+                        turnDistance = turnDistance - 0.5;
+                    }
+                    if (gamepad1.x && !wasX) {
+                        menuState = MenuState.DONE;
+                    }
+                    if (gamepad1.back && !wasBack) {
+                        menuState = MenuState.AUTO_MENU;
+                    }
 
-            // Check for controller input to change selection
-            if (gamepad1.dpad_up) {
-                autoSelected = "BlueLong";
-            } else if (gamepad1.dpad_down) {
-                autoSelected = "BlueShort";
-            } else if (gamepad1.dpad_left) {
-                autoSelected = "RedLong";
-            } else if (gamepad1.dpad_right) {
-                autoSelected = "RedShort";
+                    break;
             }
+            telemetry.update();
+            wasX = gamepad1.x;
+            wasBack = gamepad1.back;
             sleep(50); // Add a small delay to avoid excessive polling
+
+
         }
 
         yeeter.close();
-        yeeter.setVelocity(LaunchAllYeeterKing.SHORT);
+        yeeter.setVelocity(launchSpeed);
 
-        // Wait for the game to start (driver presses START)
+        //Wait for the game to start (driver presses START)
         waitForStart();
         yeeter.spinUp();;
 
@@ -203,23 +312,23 @@ public class LebotAutoDrive extends LinearOpMode {
     private void runRedLongAuto() {
         telemetry.addData("Running", "Red Long Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, LONG_DISTANCE, LONG_DISTANCE, 5.0);
-        encoderDrive(TURN_SPEED, -LONG_TURN_DISTANCE, LONG_TURN_DISTANCE, 4.0);
+        encoderDrive(DRIVE_SPEED, driveDistance, driveDistance, DRIVE_TIMEOUT);
+        encoderDrive(TURN_SPEED, -turnDistance, turnDistance, DRIVE_TIMEOUT);
         launch();
     }
 
     private void runBlueLongAuto() {
         telemetry.addData("Running", "Blue Long Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, LONG_DISTANCE, LONG_DISTANCE, 5.0);
-        encoderDrive(TURN_SPEED, LONG_TURN_DISTANCE, -LONG_TURN_DISTANCE, 4.0);
+        encoderDrive(DRIVE_SPEED, driveDistance, driveDistance, DRIVE_TIMEOUT);
+        encoderDrive(TURN_SPEED, turnDistance, -turnDistance, DRIVE_TIMEOUT);
         launch();
     }
 
     private void runBlueShortAuto() {
         telemetry.addData("Running", "Blue Short Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, -SHORT_DISTANCE, -SHORT_DISTANCE, 5.0);
+        encoderDrive(DRIVE_SPEED, -driveDistance, -driveDistance, DRIVE_TIMEOUT);
         launch();
 
     }
@@ -228,13 +337,13 @@ public class LebotAutoDrive extends LinearOpMode {
 
         telemetry.addData("Running", "Red Short Auto");
         telemetry.update();
-        encoderDrive(DRIVE_SPEED, -SHORT_DISTANCE, -SHORT_DISTANCE, 30.0);
+        encoderDrive(DRIVE_SPEED, -driveDistance, -driveDistance, DRIVE_TIMEOUT);
         launch();
     }
 
     private void launch(){
 
-        yeeter.setVelocity(LaunchAllYeeterKing.SHORT);
+        yeeter.setVelocity(900);
         yeeter.launchAll();
         timer.reset();
 
@@ -301,6 +410,8 @@ public class LebotAutoDrive extends LinearOpMode {
                 yeeter.update();
                 // Display it for the driver.
 
+                telemetry.addData("Drive Distance", driveDistance);
+                telemetry.addData("Turn Distance", turnDistance);
                 telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
                 telemetry.addData("Currently at",  " at %7d :%7d %7d %7d" ,
                         front_left_Motor.getCurrentPosition(),
@@ -327,11 +438,3 @@ public class LebotAutoDrive extends LinearOpMode {
         }
     }
 }
-
-
-
-
-
-
-                                                                                                 // if you're reading this
-                                                                                                 // why did you scroll this far???

@@ -31,8 +31,12 @@ public class Eater {
     }
 
     public void on() {
+        this.on(0.7);
+    }
+
+    public void on(double speed) {
         isEating = true;
-        eaterMotor.setPower(0.7);
+        eaterMotor.setPower(speed);
     }
 
     public void off() {
