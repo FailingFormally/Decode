@@ -168,7 +168,7 @@ public class LebotAutoDrivev3 extends LinearOpMode {
         }
 
         yeeter.close();
-        yeeter.setVelocity(LaunchAllYeeterKing.SHORT);
+        yeeter.setVelocity(LaunchAllYeeterKing.LONG);
 
         // Wait for the game to start (driver presses START)
         waitForStart();
@@ -200,11 +200,30 @@ public class LebotAutoDrivev3 extends LinearOpMode {
     }
 
     private void runRedLongAuto() {
+
+        double LONG_TURN_DISTANCE = 5;
+        double DRIVE_SPEED = 0.6;
+        double TURN_SPEED = 0.5;
+        double COLLECT_FORWARD_DISTANCE = 22;
+        double COLLECT_TURN_DISTANCE = 24;
+        double PICKUP_FORWARD = 32;
+
         telemetry.addData("Running", "Red Long Auto");
         telemetry.update();
+
         encoderDrive(DRIVE_SPEED, LONG_DISTANCE, LONG_DISTANCE, 5.0);
         encoderDrive(TURN_SPEED, -LONG_TURN_DISTANCE, LONG_TURN_DISTANCE, 4.0);
         launch();
+        encoderDrive(TURN_SPEED, LONG_TURN_DISTANCE, -LONG_TURN_DISTANCE, 4.0);
+        encoderDrive(DRIVE_SPEED, COLLECT_FORWARD_DISTANCE, COLLECT_FORWARD_DISTANCE, 5.0);
+        encoderDrive(TURN_SPEED, -COLLECT_TURN_DISTANCE, COLLECT_TURN_DISTANCE, 5.0);
+        encoderDrive(DRIVE_SPEED, PICKUP_FORWARD, PICKUP_FORWARD, 5.0);
+        encoderDrive(DRIVE_SPEED, -PICKUP_FORWARD, -PICKUP_FORWARD, 5.0);
+        encoderDrive(TURN_SPEED, COLLECT_TURN_DISTANCE, -COLLECT_FORWARD_DISTANCE, 5.0);
+        encoderDrive(DRIVE_SPEED, -COLLECT_FORWARD_DISTANCE, -COLLECT_FORWARD_DISTANCE, 5.0);
+        encoderDrive(TURN_SPEED, -LONG_TURN_DISTANCE, LONG_TURN_DISTANCE, 5.0);
+        launch();
+
     }
 
     private void runBlueLongAuto() {
@@ -225,37 +244,41 @@ public class LebotAutoDrivev3 extends LinearOpMode {
 
     private void runRedShortAuto(){
 
-
+        double LEG1 = 32;
+        double TURN1 = 10;
+        double LEG2 =  20;
+        double TURN2 = 25;
+        double LEG3 = 23;
         telemetry.addData("Running", "Red Short Auto");
         telemetry.update();
         // Drive forward
-        encoderDrive(DRIVE_SPEED, -48, -48, 30.0);
+        encoderDrive(DRIVE_SPEED, -LEG1, -LEG1, 30.0);
         launch();
         //drive backwards
-        encoderDrive(DRIVE_SPEED, -15, -15, 5);
+//        encoderDrive(DRIVE_SPEED, -15, -15, 5);
         // Turn counter clockwise
-        encoderDrive(TURN_SPEED, 25, -25, 5);
+        encoderDrive(TURN_SPEED, TURN1, -TURN1, 5);
         //Drive down to artifacts
-        encoderDrive(DRIVE_SPEED, -43, -43, 5);
+        encoderDrive(DRIVE_SPEED, -LEG2, -LEG2, 5);
         //turn towards artifacts
-        encoderDrive(TURN_SPEED, 55, -55, 5);
+        encoderDrive(TURN_SPEED, TURN2, -TURN2, 5);
         //collect artifacts
-        encoderDrive(DRIVE_SPEED, -52,-52,5);
-        encoderDrive(DRIVE_SPEED, 52, 52, 5);
+        encoderDrive(DRIVE_SPEED, -LEG3,-LEG3,5);
+        encoderDrive(DRIVE_SPEED, LEG3, LEG3, 5);
         //turn up
-        encoderDrive(TURN_SPEED, -48, 48, 5);
+        encoderDrive(TURN_SPEED, -TURN2, TURN2, 5);
         //drive up
-        encoderDrive(DRIVE_SPEED, 35, 35,5);
+        encoderDrive(DRIVE_SPEED, LEG2, LEG2,5);
         //turn towards goal
-        encoderDrive(TURN_SPEED, -28, 28, 5);
+        encoderDrive(TURN_SPEED, -TURN1, TURN1, 5);
         //drive to goal
-        encoderDrive(DRIVE_SPEED, 15, 15, 30);
+        //encoderDrive(DRIVE_SPEED, 15, 15, 30);
         launch();
     }
 
     private void launch(){
 
-        yeeter.setVelocity(LaunchAllYeeterKing.SHORT);
+        yeeter.setVelocity(LaunchAllYeeterKing.LONG);
         yeeter.launchAll();
         timer.reset();
 
