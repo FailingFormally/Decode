@@ -93,7 +93,7 @@ public class LebotAutoDrivev3 extends LinearOpMode {
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
 
-    static final double LONG_DISTANCE = 39.0;
+    static final double LONG_DISTANCE = 4;
     static final double LONG_TURN_DISTANCE = 6;
 
     static final double SHORT_DISTANCE = 48.0;

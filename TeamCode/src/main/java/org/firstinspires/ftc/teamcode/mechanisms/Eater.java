@@ -41,7 +41,7 @@ public class Eater {
 
     public void off() {
         isEating = false;
-        eaterMotor.setPower(0.7);
+        eaterMotor.setPower(0);
     }
 
     public  void setPower(double power) {
