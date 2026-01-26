@@ -64,7 +64,7 @@ public class LebotAutoDriveStates extends LebotAutoLinearOpMode {
         turnToHeading(TURN_SPEED, 45);
         driveStraight(DRIVE_SPEED, 10, 45);
         turnToHeading(TURN_SPEED, 135);
-        driveStraight(0.3, 40, 135);
+        driveStraight(PICKUP_SPEED, 40, 135);
         driveStraight(DRIVE_SPEED, -40, 135);
         turnToHeading(TURN_SPEED, 45);
         driveStraight(DRIVE_SPEED, -10, 45);
@@ -88,7 +88,7 @@ public class LebotAutoDriveStates extends LebotAutoLinearOpMode {
         turnToHeading(TURN_SPEED, -45);
         driveStraight(DRIVE_SPEED, 10, -45);
         turnToHeading(TURN_SPEED, -135);
-        driveStraight(0.3, 40, -135);
+        driveStraight(PICKUP_SPEED, 40, -135);
         driveStraight(DRIVE_SPEED, -40, -135);
         turnToHeading(TURN_SPEED, -45);
         driveStraight(DRIVE_SPEED, -10, -45);
