@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.core.LebotAutoLinearOpMode;
 
-@Autonomous(name = "Improved Auto")
+@Autonomous(name = "Auto for States")
 public class LebotAutoDriveStates extends LebotAutoLinearOpMode {
 
     enum AutoRoutine {

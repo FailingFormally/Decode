@@ -84,7 +84,7 @@ public abstract class AutoLinearOpMode extends LinearOpMode {
         // We need to properly initialize the IMU here
        RevHubOrientationOnRobot orientationOnRobot
                 = new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                        RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                         RevHubOrientationOnRobot.UsbFacingDirection.UP
                 );
        imu.initialize(new IMU.Parameters(orientationOnRobot));
