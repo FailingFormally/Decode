@@ -3,19 +3,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
-//import org.firstinspires.ftc.teamcode.mechanisms.Eater;
-import org.firstinspires.ftc.teamcode.mechanisms.Eater;
-import org.firstinspires.ftc.teamcode.mechanisms.LaunchAllYeeterKing;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
-import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
+import org.firstinspires.ftc.teamcode.mechanisms.LaunchAllYeeterKing;
 
-@TeleOp(name="Gamepad Driving")
-public class GamepadDriveTeleOp extends OpMode {
+@TeleOp(name="Driving with launchAll")
+public class LaunchAllTeleOp extends OpMode {
     MecanumDrive drive = new MecanumDrive(telemetry);
 
-    YeeterKing yeeter = new YeeterKing();
+    LaunchAllYeeterKing yeeter = new LaunchAllYeeterKing();
 
     final double FULL_SPEED = 0.7;
     final double NORMAL_SPEED = 0.5;
@@ -39,12 +35,17 @@ public class GamepadDriveTeleOp extends OpMode {
         yeeter.init(hardwareMap, telemetry);
         yeeter.close();
     }
-
+    @Override
+    public void start()
+    {
+        yeeter.setVelocity(900);
+        yeeter.spinUp();
+    }
     @Override
     public void loop() {
         telemetry.addData("LaunchSate",yeeter.getLaunchState());
 
-        if (gamepad2.rightBumperWasPressed()) {
+        if (gamepad2.right_trigger > 0) {
           yeeter.toggleEater();
         }
 
@@ -70,6 +71,17 @@ public class GamepadDriveTeleOp extends OpMode {
             yeeter.setVelocity(200);
         }
 
+        if (gamepad2.leftBumperWasPressed()) {
+            yeeter.setDirection(DcMotor.Direction.FORWARD);
+            yeeter.setVelocity(LaunchAllYeeterKing.SHORT);
+            yeeter.launchAll();
+        }
+        if (gamepad2.rightBumperWasPressed()) {
+            yeeter.setDirection(DcMotor.Direction.FORWARD);
+            yeeter.setVelocity(LaunchAllYeeterKing.LONG);
+            yeeter.launchAll();
+        }
+
 
         if (gamepad2.backWasPressed()) {
             yeeter.stop();
@@ -83,9 +95,6 @@ public class GamepadDriveTeleOp extends OpMode {
             turboEnabled = false;
         }
 
-        if(gamepad2.left_trigger >0){
-            yeeter.open();
-        }
 
         double forward = -gamepad1.left_stick_y;
         double right = -gamepad1.left_stick_x;
@@ -93,6 +102,7 @@ public class GamepadDriveTeleOp extends OpMode {
 
         drive.drive(forward, right, rotate, getSpeed());
 
+        yeeter.printTelemetry();
         telemetry.update();
 
     }

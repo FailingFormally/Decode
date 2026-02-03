@@ -9,7 +9,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class YeeterKing {
+public class LaunchAllYeeterKing {
+
+    public static double SHORT = 800;
+    public static double MEDIUM = 900;
+    public static double LONG = 1000;
 
     private boolean isYeeting;
     private DcMotorEx yeetWheelLeft;
@@ -47,12 +51,21 @@ public class YeeterKing {
 
         LAUNCH3,
 
+        LAUNCHING3,
     }
 
     private boolean hasLaunched = false;
     private boolean shotRequested = false;
-    public void launch(){
+    private boolean isTripleShot = false;
+    public void launch() {
         shotRequested = true;
+        isTripleShot = false;
+        launchState = LaunchState.SPIN_UP;
+    }
+    public void launchAll() {
+        shotRequested = true;
+        isTripleShot = true;
+        launchState = LaunchState.SPIN_UP;
     }
 
     public LaunchState getLaunchState() {
@@ -73,8 +86,8 @@ public class YeeterKing {
 
     public void open()
     {
-        servo1.setPosition(.15);
-        servo2.setPosition(.15);
+        servo1.setPosition(.1);
+        servo2.setPosition(.1);
     }
 
     public void push()
@@ -132,7 +145,7 @@ public class YeeterKing {
     public void stop(){
         yeetWheelLeft.setPower(0);
         yeetWheelNotLeft.setPower(0);
-        launchState=LaunchState.IDLE;
+        launchState= LaunchState.IDLE;
     }
 
     public void printTelemetry(){
@@ -192,7 +205,11 @@ public class YeeterKing {
             case READY:
                 close();
                 if (hasLaunched == false && shotRequested == true) {
-                    launchState = launchState.LAUNCH;
+                    if (isTripleShot) {
+                        launchState = LaunchState.LAUNCH3;
+                    } else {
+                        launchState = LaunchState.LAUNCH;
+                    }
                 }
                 break;
 
@@ -201,6 +218,14 @@ public class YeeterKing {
                 push();
                 timer.reset();
                 launchState = LaunchState.LAUNCHING;
+                break;
+
+            case LAUNCH3:
+                eater.off();
+                open();
+                eater.on(1.0);
+                timer.reset();
+                launchState = LaunchState.LAUNCHING3;
                 break;
 
             case LAUNCHING:
@@ -212,6 +237,17 @@ public class YeeterKing {
                 if (timer.seconds() > 1.8) {
                     launchState = LaunchState.SPIN_UP;
                     eater.on(); // Re-engage the intake after closing
+                }
+                break;
+
+            case LAUNCHING3:
+                hasLaunched = true;
+                shotRequested = false;
+                isTripleShot = false;
+                if (timer.seconds() > 2) {
+                    close();
+                    eater.on(0.7);
+                    launchState = LaunchState.SPIN_UP;
                 }
                 break;
         }
