@@ -51,13 +51,7 @@ public abstract class AutoLinearOpMode extends LinearOpMode {
     DcMotor frontLeftMotor;
     DcMotor frontRightMotor;
     DcMotor backRightMotor;
-    DistanceSensor frontDistance;
-    DistanceSensor leftDistance;
-    DistanceSensor rightDistance;
-    DistanceSensor backDistance;
     IMU imu;
-    ColorSensor colorSensor;
-    OctoQuad octoQuad;
 
     public abstract void runRoutine();
 
@@ -257,19 +251,11 @@ public abstract class AutoLinearOpMode extends LinearOpMode {
         frontLeftMotor.setPower(p2);
         frontRightMotor.setPower(p3);
         backRightMotor.setPower(p4);
-        telemetry.addData("Color","R %d  G %d  B %d", colorSensor.red(), colorSensor.green(), colorSensor.blue());
         telemetry.addData("Heading", " %.1f", getHeading());
         telemetry.addData("Heading Error", " %.1f", getHeadingError(90));
         telemetry.addData("Angular Velocity", "%.1f", getAngularVelocity());
-        telemetry.addData("Front Distance", " %.1f", frontDistance.getDistance(DistanceUnit.INCH));
-        telemetry.addData("Left Distance", " %.1f", leftDistance.getDistance(DistanceUnit.INCH));
-        telemetry.addData("Right Distance", " %.1f", rightDistance.getDistance(DistanceUnit.INCH));
-        telemetry.addData("Back Distance", " %.1f", backDistance.getDistance(DistanceUnit.INCH));
         telemetry.addData("Encoders"," %d %d %d %d", backLeftMotor.getCurrentPosition(), frontLeftMotor.getCurrentPosition(),
                 frontRightMotor.getCurrentPosition(), backRightMotor.getCurrentPosition());
-        telemetry.addData("Octoquad", "%d %d %d %d", octoQuad.readSinglePosition(0),
-                octoQuad.readSinglePosition(1), octoQuad.readSinglePosition(2),
-                octoQuad.readSinglePosition(3));
         telemetry.update();
     }
 
