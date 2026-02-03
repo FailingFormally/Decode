@@ -186,7 +186,7 @@ public class LebotAutoDrivev3 extends LinearOpMode {
                     runRedLongAuto();
                     break;
                 case "BlueShort":
-                    runBlueShortAuto();
+                   // runBlueShortAuto();
                     break;
                 default:
                     // Default to a safe routine, or do nothing
@@ -199,47 +199,52 @@ public class LebotAutoDrivev3 extends LinearOpMode {
         }
     }
 
-    private void runRedLongAuto() {
 
+    private void runRedLongAuto() {
         double LONG_TURN_DISTANCE = 5;
         double DRIVE_SPEED = 0.6;
         double TURN_SPEED = 0.5;
         double COLLECT_FORWARD_DISTANCE = 22;
         double COLLECT_TURN_DISTANCE = 24;
         double PICKUP_FORWARD = 32;
-
         telemetry.addData("Running", "Red Long Auto");
         telemetry.update();
-
         encoderDrive(DRIVE_SPEED, LONG_DISTANCE, LONG_DISTANCE, 5.0);
         encoderDrive(TURN_SPEED, -LONG_TURN_DISTANCE, LONG_TURN_DISTANCE, 4.0);
         launch();
         encoderDrive(TURN_SPEED, LONG_TURN_DISTANCE, -LONG_TURN_DISTANCE, 4.0);
         encoderDrive(DRIVE_SPEED, COLLECT_FORWARD_DISTANCE, COLLECT_FORWARD_DISTANCE, 5.0);
-        encoderDrive(TURN_SPEED, -COLLECT_TURN_DISTANCE, COLLECT_TURN_DISTANCE, 5.0);
-        encoderDrive(DRIVE_SPEED, PICKUP_FORWARD, PICKUP_FORWARD, 5.0);
+        encoderDrive(TURN_SPEED, COLLECT_TURN_DISTANCE, -COLLECT_TURN_DISTANCE, 5.0);
         encoderDrive(DRIVE_SPEED, -PICKUP_FORWARD, -PICKUP_FORWARD, 5.0);
-        encoderDrive(TURN_SPEED, COLLECT_TURN_DISTANCE, -COLLECT_FORWARD_DISTANCE, 5.0);
+        encoderDrive(DRIVE_SPEED, PICKUP_FORWARD, PICKUP_FORWARD, 5.0);
+        encoderDrive(TURN_SPEED, -COLLECT_TURN_DISTANCE, COLLECT_FORWARD_DISTANCE, 5.0);
         encoderDrive(DRIVE_SPEED, -COLLECT_FORWARD_DISTANCE, -COLLECT_FORWARD_DISTANCE, 5.0);
         encoderDrive(TURN_SPEED, -LONG_TURN_DISTANCE, LONG_TURN_DISTANCE, 5.0);
         launch();
-
     }
 
+
     private void runBlueLongAuto() {
+        double LONG_TURN_DISTANCE = 5;
+        double DRIVE_SPEED = 0.6;
+        double TURN_SPEED = 0.5;
+        double COLLECT_FORWARD_DISTANCE = 22;
+        double COLLECT_TURN_DISTANCE = 24;
+        double PICKUP_FORWARD = 32;
         telemetry.addData("Running", "Blue Long Auto");
         telemetry.update();
         encoderDrive(DRIVE_SPEED, LONG_DISTANCE, LONG_DISTANCE, 5.0);
         encoderDrive(TURN_SPEED, LONG_TURN_DISTANCE, -LONG_TURN_DISTANCE, 4.0);
         launch();
-    }
-
-    private void runBlueShortAuto() {
-        telemetry.addData("Running", "Blue Short Auto");
-        telemetry.update();
-        encoderDrive(DRIVE_SPEED, -SHORT_DISTANCE, -SHORT_DISTANCE, 5.0);
+        encoderDrive(TURN_SPEED, -LONG_TURN_DISTANCE, LONG_TURN_DISTANCE, 4.0);
+        encoderDrive(DRIVE_SPEED, COLLECT_FORWARD_DISTANCE, COLLECT_FORWARD_DISTANCE, 5.0);
+        encoderDrive(TURN_SPEED,COLLECT_TURN_DISTANCE,-COLLECT_TURN_DISTANCE,5.0);
+        encoderDrive(DRIVE_SPEED,PICKUP_FORWARD, PICKUP_FORWARD, 5.0);
+        encoderDrive(DRIVE_SPEED, -PICKUP_FORWARD, -PICKUP_FORWARD, 5.0);
+        encoderDrive(TURN_SPEED, -COLLECT_TURN_DISTANCE, COLLECT_FORWARD_DISTANCE, 5.0);
+        encoderDrive(DRIVE_SPEED,-COLLECT_FORWARD_DISTANCE,-COLLECT_FORWARD_DISTANCE, 5.0);
+        encoderDrive(TURN_SPEED,LONG_TURN_DISTANCE, -LONG_TURN_DISTANCE, 5.0);
         launch();
-
     }
 
     private void runRedShortAuto(){
