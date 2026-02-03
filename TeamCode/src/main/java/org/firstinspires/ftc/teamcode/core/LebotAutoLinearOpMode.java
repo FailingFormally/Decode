@@ -15,20 +15,22 @@ public abstract class LebotAutoLinearOpMode extends AutoLinearOpMode {
 
     /**
      * Translate our local DISTANCE enum to the YeeterKing values.
-     * @param distance
+     * @param distance - ENUM for Long, Medium or Short
      */
-    private getSpeed(DISTANCE distance) {
+    private double getSpeed(DISTANCE distance) {
+        double speed = LaunchAllYeeterKing.SHORT; // the default
         switch(distance) {
             case LONG:
-                return LaunchAllYeeterKing.LONG;
+                speed = LaunchAllYeeterKing.LONG;
                 break;
             case MEDIUM:
-                return LaunchAllYeeterKing.MEDIUM;
+                speed = LaunchAllYeeterKing.MEDIUM;
                 break;
             case SHORT:
-                return LaunchAllYeeterKing.SHORT;
+                speed = LaunchAllYeeterKing.SHORT;
                 break;
         }
+        return speed;
     }
 
     @Override
