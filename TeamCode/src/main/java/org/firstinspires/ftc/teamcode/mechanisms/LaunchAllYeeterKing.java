@@ -245,8 +245,11 @@ public class LaunchAllYeeterKing {
                 shotRequested = false;
                 isTripleShot = false;
                 if (timer.seconds() > 2) {
+                    push();
+                }
+                if (timer.seconds() > 2.5) {
                     close();
-                    eater.on(0.7);
+                    eater.on();
                     launchState = LaunchState.SPIN_UP;
                 }
                 break;
