@@ -48,12 +48,12 @@ public abstract class LebotAutoLinearOpMode extends AutoLinearOpMode {
         yeeter.launchAll();
         timer.reset();
 
-        while  (opModeIsActive() && timer.seconds() < 3) {
+        while  (opModeIsActive() && timer.seconds() < 4) {
             yeeter.update();
         }
 
-        yeeter.stop();
-        yeeter.turnOffEater();
+       // yeeter.stop();
+       // yeeter.turnOffEater();
     }
 
 }

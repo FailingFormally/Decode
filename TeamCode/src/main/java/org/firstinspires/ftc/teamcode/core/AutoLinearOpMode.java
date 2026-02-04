@@ -35,8 +35,8 @@ public abstract class AutoLinearOpMode extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
-    static final public double     DRIVE_SPEED             = 0.7;     // Max driving speed for better distance accuracy.
-    static final public double     TURN_SPEED              = 0.5;     // Max turn speed to limit turn rate.
+    static final public double     DRIVE_SPEED             = 0.5;     // Max driving speed for better distance accuracy.
+    static final public double     TURN_SPEED              = 0.4;     // Max turn speed to limit turn rate.
     static final public double     PICKUP_SPEED            = 0.3;      // Slow down when picking up artifacts.
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
     // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
