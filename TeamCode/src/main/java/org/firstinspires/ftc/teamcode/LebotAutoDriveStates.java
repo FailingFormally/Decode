@@ -59,13 +59,13 @@ public class LebotAutoDriveStates extends LebotAutoLinearOpMode {
     }
 
     private void runRedShortAuto() {
-        driveStraight(DRIVE_SPEED, 48, 0);
+        driveStraight(DRIVE_SPEED, 40, 0);
         launch(DISTANCE.SHORT);
         turnToHeading(TURN_SPEED, 45);
-        driveStraight(DRIVE_SPEED, 10, 45);
+        driveStraight(DRIVE_SPEED, 6, 45);
         turnToHeading(TURN_SPEED, 135);
-        driveStraight(PICKUP_SPEED, 40, 135);
-        driveStraight(DRIVE_SPEED, -40, 135);
+        driveStraight(PICKUP_SPEED, 45, 135);
+        driveStraight(DRIVE_SPEED, -45, 135);
         turnToHeading(TURN_SPEED, 45);
         driveStraight(DRIVE_SPEED, -10, 45);
         // turn toward goal again
@@ -74,10 +74,25 @@ public class LebotAutoDriveStates extends LebotAutoLinearOpMode {
     }
 
     private void runRedLongAuto() {
+        driveStraight(DRIVE_SPEED,-5,0);
+        //Turn and shoot
+        turnToHeading(TURN_SPEED,-20);
+        launch(DISTANCE.LONG);
+        turnToHeading(TURN_SPEED,0);
+        driveStraight(DRIVE_SPEED,-22,0);
+        turnToHeading(TURN_SPEED,90);
+        driveStraight(PICKUP_SPEED,36,90);
+        //Now reverse
+        driveStraight(DRIVE_SPEED,-36,90);
+        turnToHeading(DRIVE_SPEED,0);
+        driveStraight(DRIVE_SPEED,22,0);
+        //Turn and shoot
+        turnToHeading(TURN_SPEED,-20);
+        launch(DISTANCE.LONG);
+
         telemetry.addData("I don't know the Auto routine for:", autoSelected);
         telemetry.update();
-        sleep(2000);
-    }
+        sleep(2000);    }
 
     /**
      * Same as `runRedShortAuto` but the angles are reversed.
@@ -113,10 +128,6 @@ public class LebotAutoDriveStates extends LebotAutoLinearOpMode {
         //Turn and shoot
         turnToHeading(TURN_SPEED,20);
         launch(DISTANCE.LONG);
-
-
-
-
 
         telemetry.addData("I don't know the Auto routine for:", autoSelected);
         telemetry.update();
