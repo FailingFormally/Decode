@@ -13,7 +13,7 @@ public class LaunchAllYeeterKing {
 
     public static double SHORT = 900;
     public static double MEDIUM = 1050;
-    public static double LONG = 1250;
+    public static double LONG = 1300;
 
     private boolean isYeeting;
     private DcMotorEx yeetWheelLeft;

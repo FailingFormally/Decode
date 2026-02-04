@@ -49,7 +49,7 @@ public abstract class LebotAutoLinearOpMode extends AutoLinearOpMode {
         timer.reset();
 
         // Using a 7 second timeout
-        while  (opModeIsActive() && yeeter.isBusy() && timer.seconds() < 7) {
+        while  (opModeIsActive() &&  timer.seconds() < 4) {
             yeeter.update();
         }
 
