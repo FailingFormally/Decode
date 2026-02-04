@@ -105,6 +105,10 @@ public class LaunchAllYeeterKing {
         return eater.toggle();
     }
 
+    public boolean isBusy() {
+        return isYeeting;
+    }
+
     public void turnOnEater() {
         eater.on();
     }
@@ -181,6 +185,7 @@ public class LaunchAllYeeterKing {
 
         switch (launchState) {
             case IDLE:
+                isYeeting = false;
                 close();
                 // telemetry.addData("LaunchState", launchState);
                 // telemetry.addData("LaunchVelocity",shootVelocity);
@@ -189,6 +194,7 @@ public class LaunchAllYeeterKing {
                 }
                 break;
             case SPIN_UP:
+                isYeeting = true;
                 close();
                 // telemetry.addData("LaunchState", launchState);
                 //telemetry.addData("LaunchVelocity",shootVelocity);
@@ -203,6 +209,7 @@ public class LaunchAllYeeterKing {
                 break;
 
             case READY:
+                isYeeting = true;
                 close();
                 if (hasLaunched == false && shotRequested == true) {
                     if (isTripleShot) {
@@ -214,6 +221,7 @@ public class LaunchAllYeeterKing {
                 break;
 
             case LAUNCH:
+                isYeeting = true;
                 eater.off(); // turn off the intake before pushing
                 push();
                 timer.reset();
@@ -221,6 +229,7 @@ public class LaunchAllYeeterKing {
                 break;
 
             case LAUNCH3:
+                isYeeting = true;
                 eater.off();
                 open();
                 eater.on(1.0);
@@ -237,6 +246,7 @@ public class LaunchAllYeeterKing {
                 if (timer.seconds() > 1.8) {
                     launchState = LaunchState.SPIN_UP;
                     eater.on(); // Re-engage the intake after closing
+                    isYeeting = false;
                 }
                 break;
 
@@ -251,6 +261,7 @@ public class LaunchAllYeeterKing {
                     close();
                     eater.on();
                     launchState = LaunchState.SPIN_UP;
+                    isYeeting = false;
                 }
                 break;
         }
