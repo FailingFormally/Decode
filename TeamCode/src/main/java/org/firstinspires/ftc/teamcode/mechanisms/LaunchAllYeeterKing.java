@@ -11,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LaunchAllYeeterKing {
 
-    public static double SHORT = 900;
-    public static double MEDIUM = 1050;
+    public static double SHORT = 950;
+    public static double MEDIUM = 1100;
     public static double LONG = 1300;
 
     private boolean isYeeting;
