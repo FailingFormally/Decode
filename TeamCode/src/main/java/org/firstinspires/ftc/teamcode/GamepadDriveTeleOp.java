@@ -11,6 +11,10 @@ import org.firstinspires.ftc.teamcode.mechanisms.LaunchAllYeeterKing;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.YeeterKing;
 
+
+enum Alliance {
+    RED, BLUE
+}
 @TeleOp(name="Gamepad Driving")
 public class GamepadDriveTeleOp extends OpMode {
     MecanumDrive drive = new MecanumDrive(telemetry);
@@ -21,6 +25,8 @@ public class GamepadDriveTeleOp extends OpMode {
     final double NORMAL_SPEED = 0.5;
 
     boolean turboEnabled = false;
+
+    Alliance alliance = Alliance.RED;
 
     double getSpeed() {
         if (turboEnabled)
@@ -42,7 +48,6 @@ public class GamepadDriveTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("LaunchSate",yeeter.getLaunchState());
 
         if (gamepad2.rightBumperWasPressed()) {
           yeeter.toggleEater();
@@ -87,12 +92,22 @@ public class GamepadDriveTeleOp extends OpMode {
             yeeter.open();
         }
 
+        if(gamepad1.right_trigger > 0){
+            if(alliance == Alliance.RED){
+                alliance = Alliance.BLUE;
+            }
+            else {
+                alliance = Alliance.RED;
+            }
+        }
+
         double forward = -gamepad1.left_stick_y;
         double right = -gamepad1.left_stick_x;
         double rotate = gamepad1.right_stick_x;
 
         drive.drive(forward, right, rotate, getSpeed());
 
+        telemetry.addData("alliance", alliance);
         telemetry.update();
 
     }

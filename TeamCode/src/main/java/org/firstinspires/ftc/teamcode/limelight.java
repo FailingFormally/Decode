@@ -40,12 +40,5 @@ public class limelight extends OpMode{
 
 
     }
-    @Override
-    public void start() {
-        VisionPortal myVisionPortal;
-
-        // Create a VisionPortal, with the specified camera and AprilTag processor, and assign it to a variable.
-        myVisionPortal = VisionPortal.easyCreateWithDefaults(hardwareMap.get(Limelight3A.class, "Limelight", myAprilTagProcessor));
-    }
 
 }
