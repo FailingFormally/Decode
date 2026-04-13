@@ -5,6 +5,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.core.Alliance; // RED, BLUE alliances
 
@@ -25,7 +26,16 @@ public class LaunchAllTeleOp extends OpMode {
 
     Alliance alliance = Alliance.RED;
 
-    Limelight limelight;
+    Limelight limelight = new Limelight();
+
+    // ==== PD control for aiming ====
+    double kP = 0.02;
+    double error = 0;
+    double lastError = 0;
+    double angleTolerance = 0.4;
+    double kD = 0.01;
+    double curTime = 0;
+    double lastTime = 0;
 
     double getSpeed() {
         if (turboEnabled)
@@ -52,6 +62,8 @@ public class LaunchAllTeleOp extends OpMode {
     {
         yeeter.setVelocity(900);
         yeeter.spinUp();
+        resetRuntime();
+        curTime = getRuntime();
     }
     @Override
     public void loop() {
@@ -122,9 +134,6 @@ public class LaunchAllTeleOp extends OpMode {
         double right = -gamepad1.left_stick_x;
         double rotate = gamepad1.right_stick_x;
 
-        drive.drive(forward, right, rotate, getSpeed());
-        yeeter.printTelemetry();
-
         LLResult result = limelight.getLatestResult();
         if (result != null && result.isValid()) {
             double tx = result.getTx(); // How far left or right the target is (degrees)
@@ -134,10 +143,37 @@ public class LaunchAllTeleOp extends OpMode {
             telemetry.addData("Target X", tx);
             telemetry.addData("Target Y", ty);
             telemetry.addData("Target Area", ta);
+
+            if (gamepad1.left_trigger > 0.2) {
+
+                error = tx;
+                if (Math.abs(error) < angleTolerance) {
+                    rotate = 0;
+                    lastTime = getRuntime();
+                    lastError = 0;
+                } else {
+                    double pTerm = error * kP;
+                    curTime = getRuntime();
+                    double dT = curTime - lastTime;
+                    double dTerm = ((error - lastError) / dT) * kD;
+                    rotate = Range.clip(pTerm + dTerm, -0.4, 0.4);
+
+                    lastError = error;
+                    lastTime = curTime;
+                }
+            } else {
+                lastError = 0;
+                lastTime = getRuntime();
+            }
+
         } else {
             telemetry.addData("Limelight", "No Targets");
+            lastError = 0;
+            lastTime = getRuntime();
         }
 
+        drive.drive(forward, right, rotate, getSpeed());
+        yeeter.printTelemetry();
         telemetry.update();
 
     }
