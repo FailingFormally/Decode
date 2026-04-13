@@ -6,12 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.core.Alliance; // RED, BLUE alliances
+
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.LaunchAllYeeterKing;
-
-enum Alliance {
-    RED, BLUE
-}
 
 @TeleOp(name="Driving with launchAll")
 public class LaunchAllTeleOp extends OpMode {
