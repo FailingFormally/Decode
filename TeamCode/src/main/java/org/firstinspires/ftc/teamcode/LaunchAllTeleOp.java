@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.core.Alliance; // RED, BLUE alliances
 
+import org.firstinspires.ftc.teamcode.mechanisms.Limelight;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.LaunchAllYeeterKing;
 
@@ -24,7 +25,7 @@ public class LaunchAllTeleOp extends OpMode {
 
     Alliance alliance = Alliance.RED;
 
-    Limelight3A limelight;
+    Limelight limelight;
 
     double getSpeed() {
         if (turboEnabled)
@@ -42,11 +43,9 @@ public class LaunchAllTeleOp extends OpMode {
         drive.init(hardwareMap);
         yeeter.init(hardwareMap, telemetry);
         yeeter.close();
+        limelight.init(hardwareMap);
+        limelight.setPipeline(0); // Default to 0 for red alliance
 
-        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
-        limelight.setPollRateHz(100); // This sets how often we ask Limelight for data (100 times per second)
-        limelight.start(); // This tells Limelight to start looking!
-        limelight.pipelineSwitch(0); // Default to 0 for red alliance
     }
     @Override
     public void start()
@@ -111,11 +110,11 @@ public class LaunchAllTeleOp extends OpMode {
         if(gamepad1.right_trigger > 0){
             if(alliance == Alliance.RED){
                 alliance = Alliance.BLUE;
-                limelight.pipelineSwitch(1);
+                limelight.setPipeline(1);
             }
             else {
                 alliance = Alliance.RED;
-                limelight.pipelineSwitch(0);
+                limelight.setPipeline(0);
             }
         }
 
