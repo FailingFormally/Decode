@@ -29,11 +29,11 @@ public class LaunchAllTeleOp extends OpMode {
     Limelight limelight = new Limelight();
 
     // ==== PD control for aiming ====
-    double kP = 0.02;
+    double kP = 0.1100;
     double error = 0;
     double lastError = 0;
     double angleTolerance = 0.4;
-    double kD = 0.01;
+    double kD = 0.0003;
     double curTime = 0;
     double lastTime = 0;
 
@@ -156,7 +156,7 @@ public class LaunchAllTeleOp extends OpMode {
                     curTime = getRuntime();
                     double dT = curTime - lastTime;
                     double dTerm = ((error - lastError) / dT) * kD;
-                    rotate = Range.clip(pTerm + dTerm, -0.4, 0.4);
+                    rotate = Range.clip(pTerm + dTerm, -0.5, 0.5);
 
                     lastError = error;
                     lastTime = curTime;
