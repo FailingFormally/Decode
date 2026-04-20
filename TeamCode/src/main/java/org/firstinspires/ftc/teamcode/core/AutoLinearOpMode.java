@@ -35,16 +35,16 @@ public abstract class AutoLinearOpMode extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // They can/should be tweaked to suit the specific robot drive train.
-    static final public double     DRIVE_SPEED             = 0.5;     // Max driving speed for better distance accuracy.
-    static final public double     TURN_SPEED              = 0.4;     // Max turn speed to limit turn rate.
-    static final public double     PICKUP_SPEED            = 0.3;      // Slow down when picking up artifacts.
+    static final public double     DRIVE_SPEED             = 0.3;     // Max driving speed for better distance accuracy.
+    static final public double     TURN_SPEED              = 0.3;     // Max turn speed to limit turn rate.
+    static final public double     PICKUP_SPEED            = 0.2;      // Slow down when picking up artifacts.
     static final double     HEADING_THRESHOLD       = 1.0 ;    // How close must the heading get to the target before moving to next step.
     // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
     // Increase these numbers if the heading does not correct strongly enough (eg: a heavy robot or using tracks)
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
-    static final double     P_TURN_GAIN            = 0.1;     // Larger is more responsive, but also less stable.
+    static final double     P_TURN_GAIN            = 0.03;     // Larger is more responsive, but also less stable.
     static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable.
 
     DcMotor backLeftMotor;
@@ -219,7 +219,7 @@ public abstract class AutoLinearOpMode extends LinearOpMode {
         double headingError = getHeadingError(desiredHeading);
 
         // Multiply the error by the gain to determine the required steering correction/  Limit the result to +/- 1.0
-        return Range.clip(headingError * proportionalGain, -1, 1);
+        return Range.clip(headingError * proportionalGain, -TURN_SPEED, TURN_SPEED);
     }
 
     public double getHeadingError(double desiredHeading) {

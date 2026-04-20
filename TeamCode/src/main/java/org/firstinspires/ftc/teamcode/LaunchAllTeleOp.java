@@ -69,7 +69,7 @@ public class LaunchAllTeleOp extends OpMode {
     public void loop() {
         telemetry.addData("alliance", alliance);
 
-        if (gamepad2.right_trigger > 0) {
+        if (gamepad2.rightStickButtonWasPressed()) {
           yeeter.toggleEater();
         }
 
